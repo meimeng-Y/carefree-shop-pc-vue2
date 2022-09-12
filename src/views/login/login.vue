@@ -85,6 +85,7 @@ export default {
         if (res.status === 200) {
           this.$message.success('登录成功！')
           window.localStorage.setItem('token', res.data.token)
+          this.$router.push('/index')
         } else if (res.status === 422) {
           this.$message.warning('账号或密码错误')
         } else {

@@ -132,14 +132,14 @@ export default {
       })
       //首页精品推荐
       getBoutiqueList().then(res => {
-        if (res.code == 200) {
+        if (res.status == 200) {
           // console.log(res)
           this.BoutiqueLists = res.data
         }
       })
       //首页猜你喜欢
       getLike().then(res => {
-        if (res.code == 200) {
+        if (res.status == 200) {
           // console.log(res)
           this.Likes = res.data
         }

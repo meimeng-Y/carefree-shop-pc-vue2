@@ -47,6 +47,9 @@ export const registerCode = params => post(USER_REGISTER + '/verify', params)
 // 登录
 export const login = params => post('/api/login', params);
 
+//退出登录
+export const loginOut = params => post('/api/auth/logout', params);
+
 // 首页轮播
 export const getBanner = params => get(INDEX_URl + '/banner', params);
 

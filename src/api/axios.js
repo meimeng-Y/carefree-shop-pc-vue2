@@ -13,7 +13,7 @@ axios.interceptors.request.use(config => {
   //拦截所有请求，添加登陆用户的token
   if (window.localStorage.getItem('token')) {
 
-    config.headers.token = window.localStorage.getItem('token');
+    config.headers.Authorization = window.localStorage.getItem('token');
   }
   return config
 })

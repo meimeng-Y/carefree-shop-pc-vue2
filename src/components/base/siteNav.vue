@@ -11,7 +11,12 @@
           <!--    占位end-->
           <el-col :span="22">
             <div class="grid-content ">
-              <div class="grid-content t_login">
+              <div class="welcome" @mouseover="isShowOut = true" @mouseleave="isShowOut = false" v-show="ifLogoin">
+                欢迎你 xxxxxxxx
+                <span class="iconfont hoverShowOut"></span>
+                <div class="outLogin" v-show="isShowOut" @click="outLoginBtn">退出登录</div>
+              </div>
+              <div class="grid-content t_login" v-show="!ifLogoin">
                 你好 请先 <span @click="loginBtn(2)">登录</span> 或 <span @click="loginBtn(1)">注册</span>
               </div>
             </div>
@@ -77,10 +82,15 @@
 </template>
 
 <script>
+import {getUserInfo, loginOut} from '../../api/api'
+
 export default {
   name: "siteNav",
   data() {
-    return {}
+    return {
+      isShowOut: false,//显示退出登录按钮
+      ifLogoin: false,//是否登录
+    }
   },
   methods: {
     //登录或注册
@@ -90,6 +100,21 @@ export default {
     goToUserInfo() {
       this.$router.push({path: '/userInfo'})
     },
+    outLoginBtn() {
+      loginOut().then(res => {
+        if (res.status == 200) {
+          window.localStorage.removeItem('token')
+          window.localStorage.removeItem('userInfo')
+          this.$message.success(res.data)
+          location.reload()
+        }
+      })
+    }
+  },
+  mounted() {
+    if (window.localStorage.getItem('token') != null) {
+      this.ifLogoin = true
+    }
   }
 }
 </script>
@@ -160,6 +185,21 @@ export default {
       &:hover {
         background-color: #ffeee3;
       }
+    }
+  }
+
+  .welcome {
+    position: relative;
+    width: 150px;
+
+    .outLogin {
+      position: absolute;
+      width: 100%;
+      z-index: 999;
+      background: #FFFFFF;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px #cccccc;
     }
   }
 }

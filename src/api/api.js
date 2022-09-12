@@ -36,11 +36,16 @@ const USER_COLLECT_URL = '/user/collect' // 用户收藏
 const USER_CART_URL = '/user/cart' // 用户购物车
 
 const USER_ORDER_URL = '/user/order' // 用户订单
+
+const USER_REGISTER = '/api/register'
 // 注册
-export const register = params => post('/register', params);
+export const register = params => post(USER_REGISTER, params);
+
+//发送验证码
+export const registerCode = params => post(USER_REGISTER + '/verify', params)
 
 // 登录
-export const login = params => post('/login', params);
+export const login = params => post('/api/login', params);
 
 // 首页轮播
 export const getBanner = params => get(INDEX_URl + '/banner', params);

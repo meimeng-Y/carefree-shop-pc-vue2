@@ -25,7 +25,7 @@
           <el-form-item label="验证码" v-if="!isShow">
             <!--            注册-->
             <el-input v-model="formLogin.code" placeholder="请输入验证码"></el-input>
-            <el-button type="primary" size="medium" class="send-code">获取验证码</el-button>
+            <el-button type="primary" size="medium" @click="getCode" class="send-code">获取验证码</el-button>
           </el-form-item>
           <el-form-item label="昵称" v-if="!isShow">
             <!--            注册-->
@@ -46,7 +46,8 @@
             <span v-text="isShow ? '用户注册' : '登录'" @click="type === '2' ? type = '1' : type='2'"><!--用户注册/登录--></span>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="medium" v-text="isShow  ? '立即登录' : '注册' "><!--立即登录/注册--></el-button>
+            <el-button type="primary" @click="login" size="medium" v-text="isShow  ? '立即登录' : '注册' ">
+              <!--立即登录/注册--></el-button>
           </el-form-item>
         </el-form>
         <!--        表单end-->
@@ -56,6 +57,8 @@
 </template>
 
 <script>
+import {login, register, registerCode} from '../../api/api.js'
+
 export default {
   name: "login",
   data() {
@@ -63,16 +66,68 @@ export default {
       type: "2",//默认登录
       isShow: true,//默认显示登录
       formLogin: {
-        phone: '',
+        phone: '123456789',
         code: '',//获取验证码
         nickname: '',//昵称
-        password: '',
+        password: '123456789',
         password2: '',
         noLogin: [],//免登录
       }
     }
   },
-  methods: {},
+  methods: {
+    //登录
+    getLogin() {
+      login({
+        'username': this.formLogin.phone,
+        'password': this.formLogin.password
+      }).then(res => {
+        if (res.status === 200) {
+          this.$message.success('登录成功！')
+          window.localStorage.setItem('token', res.data.token)
+        } else if (res.status === 422) {
+          this.$message.warning('账号或密码错误')
+        } else {
+          this.$message.warning('出现错误');
+        }
+      })
+    },
+    //注册
+    getRegister() {
+      register({
+        'account': this.formLogin.phone,//手机号
+        'captcha': this.formLogin.code,//验证码
+        'password': this.formLogin.password,
+        'nickname': this.formLogin.nickname, //用户昵称
+      }).then(res => {
+        if (res.status == 200) {
+          this.$message.success(res.msg)
+          this.type = '2'
+        } else if (res.status == 422) {
+          this.$message.warning(res.msg)
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
+    },
+    //获取验证码
+    getCode() {
+      registerCode({
+        phone: this.formLogin.phone,
+        type: "register",
+      }).then(res => {
+        this.formLogin.code = res.data
+      })
+    },
+    login() {
+      let self = this.type
+      if (self === '2') {//登录
+        this.getLogin()
+      } else if (self === '1') {//注册
+        this.getRegister()
+      }
+    },
+  },
   watch: {
     type(newVal, oldVal) {
       if (newVal === "2") {

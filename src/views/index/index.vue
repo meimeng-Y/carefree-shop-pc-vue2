@@ -29,11 +29,8 @@
             <el-col :span="19">
               <div class="grid-content">
                 <el-carousel height="470px">
-                  <el-carousel-item>
-                    <img style="width: 100%;height: 470px" src="../../assets/images/banner1.png"/>
-                  </el-carousel-item>
-                  <el-carousel-item>
-                    <img style="width: 100%;height: 470px" src="../../assets/images/banner2.png"/>
+                  <el-carousel-item v-for="(banner,index) in banners" :key="index">
+                    <img style="width: 100%;height: 470px" :src="img_url+banner.pic"/>
                   </el-carousel-item>
                 </el-carousel>
               </div>
@@ -103,7 +100,7 @@
 </template>
 
 <script>
-import {getCategory, IMG_URL, getBoutiqueList, getLike} from '../../api/api'
+import {getCategory, IMG_URL, getBoutiqueList, getLike, getBanner} from '../../api/api'
 import ProductList from "../../components/base/productList";
 
 export default {
@@ -116,6 +113,7 @@ export default {
       category_children: [],//二级分类数据
       BoutiqueLists: [],//首页精品推荐
       Likes: [],//首页猜你喜欢
+      banners: [],//轮播图信息
     }
   },
   methods: {
@@ -126,6 +124,14 @@ export default {
       this.category_children = newCategory[0].children
     },
     init() {
+      //首页轮播图
+      getBanner().then(res => {
+        if (res.status == 200) {
+          // console.log(res)
+          this.banners = res.data
+        }
+      })
+      //获取分类数据
       getCategory().then(res => {
         this.categorys = res.data //初始化分类数据
         this.tab_item(res.data[0].id)//初始化二级分类数据

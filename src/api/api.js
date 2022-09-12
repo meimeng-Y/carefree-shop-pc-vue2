@@ -19,7 +19,7 @@ import axios from "axios";
 //图片主机地址
 export const IMG_URL = axios.defaults.baseURL + '/img';
 
-const INDEX_URl = '/index' //首页前缀
+const INDEX_URl = '/api/index' //首页前缀
 
 const CATEGORIES_URL = '/categories' //商品分类前缀
 

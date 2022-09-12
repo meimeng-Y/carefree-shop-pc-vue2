@@ -21,7 +21,7 @@ export const IMG_URL = axios.defaults.baseURL + '/img';
 
 const INDEX_URl = '/api/index' //首页前缀
 
-const CATEGORIES_URL = '/categories' //商品分类前缀
+const CATEGORIES_URL = '/api' //商品分类前缀
 
 const USER_URL = '/user' //用户有关前缀，需要token
 

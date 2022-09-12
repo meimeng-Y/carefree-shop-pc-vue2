@@ -63,7 +63,7 @@ export const getBoutiqueList = params => get(INDEX_URl + '/boutiqueList', params
 export const getLike = params => get(INDEX_URl + '/like', params);
 
 //获取搜索页热门搜索关键字
-export const getKeyword = params => get(INDEX_URl + '/keyword', params);
+export const getKeyword = params => get('/api/search/keyword', params);
 
 //获取商品分类
 export const getCategory = params => get(CATEGORIES_URL + '/category', params);

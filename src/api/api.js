@@ -31,7 +31,7 @@ const USER_ADDRESS_URL = '/user/address' //用户地址
 
 const PRODUCT_URL = '/api' // 商品控制
 
-const USER_COLLECT_URL = '/user/collect' // 用户收藏
+const USER_COLLECT_URL = '/api/collect' // 用户收藏
 
 const USER_CART_URL = '/user/cart' // 用户购物车
 
@@ -93,7 +93,7 @@ export const postCollectDel = params => post(USER_COLLECT_URL + '/del', params);
 export const postCollectDels = params => post(USER_COLLECT_URL + '/dels', params);
 
 //获取用户收藏商品
-export const getCollectAll = params => get(USER_COLLECT_URL + '/getallcollect', params);
+export const getCollectAll = params => get(USER_COLLECT_URL + '/user', params);
 
 //用户添加商品到购物车
 export const postCartAdd = params => post(USER_CART_URL + '/add', params);

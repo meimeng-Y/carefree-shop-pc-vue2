@@ -17,20 +17,22 @@
     <div id="browseRecords-content">
 
       <el-row>
-        <el-col :span="4" v-for="(i,index) in 6" :key="index"
+        <el-col v-for="(value,index) in collectlist"
+                :key="value.pid"
+                :span="4"
                 :offset="index % 5===0 || index === 0?0:1" class="el-browseRecords-4">
           <div id="father-box" :class="multi_select_icon" @click="selectPro()">
             <div>
               <el-image
                 style="width: 160px; height: 185px"
-                :src="url"
+                :src="img_url+value.image"
                 fit="cover"></el-image>
             </div>
             <div class="product-name">
-              华为畅享6S钢化膜
+              {{ value.storeName }}
             </div>
             <div class="price">
-              ¥30.00
+              ¥{{ value.price }}
             </div>
             <div class="btnBox">
               <span>
@@ -49,18 +51,31 @@
 </template>
 
 <script>
+import {getCollectAll, IMG_URL, postCollectDels} from '../../../api/api'
+
 export default {
   name: "browseRecords",
   data() {
     return {
+      img_url: IMG_URL,//图片地址主机
       activeName: 'first',
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       selectAll: 0,//是否全选
       edit: false,//显示批量操作按钮
       multi_select_icon: 'select_icon_show',
+      collectlist: [],//足迹列表
+      queryType: 'foot',//查询的商品类型
     };
   },
   methods: {
+    //获取初始数据
+    init() {
+      getCollectAll({
+        type: this.queryType
+      }).then(res => {
+        console.log(res)
+        this.collectlist = res.data
+      })
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -87,6 +102,9 @@ export default {
       // }
       this.edit = true
     },
+  },
+  mounted() {
+    this.init()
   }
 }
 </script>
@@ -145,6 +163,11 @@ export default {
 .product-name {
   border-top: 1px solid #E5E5E5;
   margin: 10px 0;
+  font-size: 14px;
+  padding: 15px 15px 0;
+  overflow: hidden;
+  white-space: nowrap; //内容超出不换行
+  text-overflow: ellipsis;
 }
 
 .price {

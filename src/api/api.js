@@ -29,7 +29,7 @@ const USER_RECHARGE_URL = '/user/recharge' //用户充值
 
 const USER_ADDRESS_URL = '/user/address' //用户地址
 
-const PRODUCT_URL = '/product' // 商品控制
+const PRODUCT_URL = '/api' // 商品控制
 
 const USER_COLLECT_URL = '/user/collect' // 用户收藏
 

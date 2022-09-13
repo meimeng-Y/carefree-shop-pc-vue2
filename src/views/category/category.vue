@@ -28,13 +28,14 @@
                         <el-col :span="24">
                           <div class="grid-content collation">
                             <div>排序：</div>
-                            <div>默认</div>
-                            <div class="price-collation">价格
+                            <div :class="{activation : activation_sort ===1}" @click="defaultSort()">默认</div>
+                            <div class="price-collation" :class="{activation : activation_sort ===2}"
+                                 @click="priceSort()">价格
                               <div class='arr'>
-                                <!--                                <div class='up' :class="priceOrder=='asc'?'low':''"></div>-->
-                                <!--                                <div class='down' :class="priceOrder=='desc'?'high':''"></div>-->
-                                <div class='up'></div>
-                                <div class='down'></div>
+                                <div class='up' :class="priceOrder=='asc'?'low':''"></div>
+                                <div class='down' :class="priceOrder=='desc'?'high':''"></div>
+                                <!--                                <div class='up'></div>-->
+                                <!--                                <div class='down'></div>-->
                               </div>
                             </div>
                           </div>
@@ -78,29 +79,72 @@
 <script>
 import ProductList from "../../components/base/productList";
 import {IMG_URL, getGoodsList} from '../../api/api'
+import {createNamespacedHelpers} from 'vuex'
 
+const {mapMutations, mapGetters} = createNamespacedHelpers('search')
 export default {
   name: "category",
   components: {ProductList},
   data() {
     return {
+      activation_sort: 1,//默认激活的排序
       classifyName: '',
       priceOrder: '',//排序图标
       queryParam: {
         sid: '',//分类id
         isIntegral: 0, //是否积分兑换商品
+        priceOrder: '',//价格排序
+        page: 1,//分页
+        limit: 12,//分页
       },
       listProds: [],//商品分类数据
     }
   },
+  computed: {
+    ...mapGetters({
+      Keyword: 'getKeywordVal'
+    })
+  },
+  watch: {
+    //监听搜索框变化
+    Keyword(newVal, oldVal) {
+      console.log(newVal)
+      this.classifyName = newVal
+      this.queryParam['keyword'] = newVal
+      this.getlist(this.queryParam) //获取数据
+    }
+  }
+  ,
   methods: {
     /*查询商品数据*/
     getlist(queryParam) {
       getGoodsList(queryParam).then(res => {
-        console.log(res)
+        // console.log(res)
         this.listProds = res.data.content
       })
     },
+    // 默认排序
+    defaultSort() {
+      if (this.activation_sort === 1) {
+        return
+      }
+      this.activation_sort = 1
+      this.priceOrder = ''
+      this.getlist(this.queryParam) //获取数据
+    },
+    // 价格排序
+    priceSort() {
+      this.activation_sort = 2
+      if (this.priceOrder !== 'desc') {
+        this.priceOrder = 'desc'
+      } else {
+        this.priceOrder = 'asc'
+      }
+      let map = {}
+      Object.assign(map, this.queryParam)
+      map['priceOrder'] = this.priceOrder
+      this.getlist(map) //获取数据
+    }
   },
   mounted() {
     /*分类查询商品列表*/
@@ -216,6 +260,14 @@ export default {
     border-top-color: #999999;
     margin-top: 3px;
   }
+
+  .high {
+    border-top-color: #FF7800;
+  }
+
+  .low {
+    border-bottom-color: #FF7800;
+  }
 }
 
 .collation, .price-collation {
@@ -227,14 +279,23 @@ export default {
 .collation {
   & > div:nth-child(2) {
     margin-left: 20px;
+    cursor: pointer;
   }
 
   & > div:nth-child(3) {
     margin: 0 20px;
+    cursor: pointer;
   }
 }
 
 .my-padding {
   padding: 0 45px 30px;
 }
+
+.collation {
+  .activation {
+    color: #FF7800;
+  }
+}
+
 </style>

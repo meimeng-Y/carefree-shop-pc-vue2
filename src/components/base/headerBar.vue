@@ -5,7 +5,8 @@
       <!--      logo-->
       <el-col :span="3" class="logo">
         <div class="grid-content ">
-          <img src='@/assets/images/cereshop/home/eshop.png'>
+          <img src='@/assets/images/cereshop/home/eshop.png'
+               @click="goIndex">
         </div>
       </el-col>
       <!--      logo end-->
@@ -13,9 +14,8 @@
       <el-col :span="9" :offset="12" class="search">
         <div class="grid-content ">
           <el-input placeholder="请输入搜索商品" v-model="shopName" class="myinput" prefix-icon="el-icon-search">
-            <template slot="append">搜索</template>
+            <el-button slot="append" @click="goSearch(shopName)">搜索</el-button>
           </el-input>
-
         </div>
       </el-col>
       <!--      搜索框end-->
@@ -24,11 +24,41 @@
 </template>
 
 <script>
+import {createNamespacedHelpers} from 'vuex'
+
+const {mapMutations, mapGetters} = createNamespacedHelpers('search')
+
 export default {
   name: "headerBar",
   data() {
     return {
       shopName: '',
+    }
+  },
+  computed: {
+    //命名空间映射
+    ...mapGetters(['getKeywordVal']),
+  }
+  ,
+  methods: {
+    ...mapMutations(['setKeywordVal']),
+    //点击搜索按钮跳转到商品列表
+    goSearch(val) {
+      // console.log(val)
+      if (this.$route.name !== 'category') {
+        this.$router.push({
+          name: 'category'
+        })
+      }
+      this.setKeywordVal(val)
+    },
+    goIndex() {
+      // console.log(this.$route.path)
+      if (this.$route.path === '/index') {
+        return
+      } else {
+        this.$router.push('/index')
+      }
     }
   }
 }
@@ -55,9 +85,12 @@ export default {
   background: #e5e9f2;
 }
 
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
+.logo {
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+    cursor: pointer;
+  }
 }
 
 .row-bg {
@@ -76,6 +109,7 @@ export default {
 .search {
   .grid-content {
     margin: 25px 0;
+
   }
 
   /deep/ .el-input-group__append {
@@ -102,5 +136,7 @@ export default {
     height: 50px;
     border: 1px solid #FF7800;
   }
+
+  cursor: pointer;
 }
 </style>

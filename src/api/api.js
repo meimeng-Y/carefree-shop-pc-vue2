@@ -87,10 +87,10 @@ export const getGoodsDetail = params => get(PRODUCT_URL + '/detail', params);
 export const postCollectAdd = params => post(USER_COLLECT_URL + '/add', params);
 
 //取消收藏商品
-export const postCollectDel = params => post(USER_COLLECT_URL + '/del', params);
+export const postCollectDel = params => post(USER_COLLECT_URL + '/del', params);//给商品详情页使用
 
 //批量取消收藏商品,清除足迹
-export const postCollectDels = params => post(USER_COLLECT_URL + '/dels', params);
+export const postCollectDels = params => post(USER_COLLECT_URL + `/dels/${params.ids}`, params);
 
 //获取用户收藏商品
 export const getCollectAll = params => get(USER_COLLECT_URL + '/user', params);

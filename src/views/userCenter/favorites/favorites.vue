@@ -21,7 +21,9 @@
                 :key="value.pid"
                 :span="4"
                 :offset="index % 5===0 || index === 0?0:1" class="el-favorites-4">
-          <div id="father-box" :class="multi_select_icon" @click="selectPro()">
+          <div id="father-box" class="select_icon_show"
+               :class="{selected : value.selected === 1 , edit: !edit}"
+               @click="selectPro(index,value.selected)">
             <div>
               <el-image
                 style="width: 160px; height: 185px"
@@ -35,10 +37,10 @@
               ¥{{ value.price }}
             </div>
             <div class="btnBox">
-              <span>
+              <span @click="unfavorite(value.pid)">
                 取消收藏
               </span>
-              <span>
+              <span @click="toProductDetail(item)">
                 查看详情
               </span>
             </div>
@@ -51,7 +53,7 @@
 </template>
 
 <script>
-import {getCollectAll, IMG_URL, postCollectDels} from '../../../api/api'
+import {getCollectAll, IMG_URL, postCollectDels, postCollectDel} from '../../../api/api'
 
 export default {
   name: "favorites",
@@ -61,10 +63,23 @@ export default {
       activeName: 'first',
       selectAll: 0,//是否全选
       edit: false,//显示批量操作按钮
-      multi_select_icon: 'select_icon_show',
       collectlist: [],//收藏列表
       queryType: 'collect',//查询的商品类型
+      // checkedCollectList: []
     };
+  },
+  watch: {
+    collectlist: {//监听全选
+      handler: function (val) {
+        this.selectAll = 1
+        val.map(v => {
+          if (v.selected === 0) {
+            this.selectAll = 0
+          }
+        })
+      },
+      deep: true
+    }
   },
   methods: {
     //获取初始数据
@@ -73,7 +88,17 @@ export default {
         type: this.queryType
       }).then(res => {
         console.log(res)
-        this.collectlist = res.data
+        // this.collectlist = res.data
+        if (res.data.length > 0) {
+          this.setMark(res.data)
+        }
+      })
+    },
+    //设置选中标识
+    setMark(value) {
+      this.collectlist = value.map(val => {
+        val.selected = 0 //是否选中标识
+        return val
       })
     },
     handleClick(tab, event) {
@@ -81,27 +106,78 @@ export default {
     },
     // 全选
     changeChecked() {
-
+      // console.log('全选按钮')
+      this.collectlist.map(val => {
+        this.$set(val, 'selected', this.selectAll)
+      })
     },
     //单个选中
-    selectPro() {
-      this.multi_select_icon = 'select_icon_show selected'
+    selectPro(index, selected) {
+      if (this.edit) {//如果没有进入批量选择，点击多选无效
+        if (selected === 1) {
+          this.collectlist[index].selected = 0
+        } else {
+          this.collectlist[index].selected = 1
+        }
+      }
     },
-    // 取消选中收藏
+    // 批量取消选中收藏
     cancelFun() {
-
+      let checkedCollectList = []
+      this.collectlist.map(val => {
+        if (val.selected === 1) {
+          checkedCollectList.push(val.pid)
+        }
+      })
+      if (checkedCollectList.length <= 0) {
+        this.$message.warning('请选择删除内容')
+        return
+      }
+      let listId = JSON.stringify(checkedCollectList).replace('[', '').replace(']', '')
+      postCollectDels({
+        category: this.queryType,
+        ids: listId //字符串格式
+      }).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          this.$message.success('删除成功')
+          //刷新数据
+          this.init()
+          this.saveList()
+        }
+      })
     },
+    //批量操作后保存,重置所有选中
     saveList() {
+      this.collectlist.map(val => {
+        this.$set(val, 'selected', 0)
+      })
+      this.selectAll = 0
       this.edit = false
     },
-    // 批量管理
+    // 批量管理显示按钮
     showEdit() {
-
-      // if (this.attentiondList.length === 0) {
-      //   return
-      // }
+      if (this.collectlist.length === 0) {//收藏列表为空
+        return
+      }
       this.edit = true
     },
+    // 取消单个收藏请求
+    unfavorite(productId) {
+      postCollectDel({
+        id: productId,
+        category: this.queryType
+      }).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          this.$message.success('取消成功')
+          this.init()
+        }
+      })
+    },
+    // 跳转到商品详情
+    toProductDetail(item) {
+    }
   },
   mounted() {
     this.init()
@@ -159,6 +235,7 @@ export default {
     line-height: 30px;
     border-top: 1px solid #E5E5E5;
     border-left: 1px solid #E5E5E5;
+    cursor: pointer;
   }
 }
 
@@ -217,12 +294,16 @@ export default {
   right: 0;
   top: 0;
   display: block;
-  background-size: contain;
+  background-size: cover;
   z-index: 999;
+}
+
+.edit:before {
+  display: none;
 }
 
 .selected:before {
   background: url("./../../../assets/images/edit.png");
-  background-size: contain;
+  background-size: cover;
 }
 </style>

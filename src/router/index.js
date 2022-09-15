@@ -18,7 +18,7 @@ import test2 from "../test/test2";
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -159,3 +159,23 @@ export default new Router({
     },
   ]
 })
+
+/*进入路由之前*/
+router.beforeEach((to, from, next) => {
+  let loginInfo = window.localStorage.getItem('userInfo')//用户信息
+  let token = window.localStorage.getItem('token')//用户token
+  //console.log('islogin', islogin)
+  /*判断是否需要token*/
+  if (to.meta.isToken) {
+    if (loginInfo == null && token == null) {
+      console.log('没有token,被拦截')
+      return next("/login")
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

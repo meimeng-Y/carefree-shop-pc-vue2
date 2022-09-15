@@ -1,8 +1,9 @@
 <template>
-  <!--商品列表-->
+  <!--商品列表   @click="goProductDetail(val.id)" -->
   <el-row :gutter="10">
+
     <el-col :span="6" v-for="(val, index) in productList" :key="index">
-      <el-card :body-style="{ padding: '0px' ,height: '446px' }" shadow="hover">
+      <el-card :body-style="{ padding: '0px' ,height: '446px' }" shadow="hover" @click.native="goProductDetail(val.id)">
         <img :src='img_url + val.image'
              class="image">
         <div class="product_title">
@@ -22,6 +23,7 @@
         </div>
       </el-card>
     </el-col>
+
   </el-row>
 </template>
 
@@ -36,6 +38,17 @@ export default {
     };
   },
   props: ['productList'],
+  methods: {
+    goProductDetail(id) {
+      console.log(id)
+      this.$router.push({
+        name: 'productDetail',
+        query: {
+          productId: id
+        }
+      })
+    }
+  }
 }
 </script>
 

@@ -80,8 +80,15 @@ export const getAddressOne = params => get(USER_ADDRESS_URL + '/detail', params)
 //获取商品列表
 export const getGoodsList = params => get(PRODUCT_URL + '/products', params);
 
+//获取商品评论
+export const getGoodsComment = params => get(PRODUCT_URL + '/reply/list/' + params.id, params.way);
+
+//获取商品评论统计
+export const getGoodsCommentCount = params => get(PRODUCT_URL + '/reply/config/' + params.id, null);
+
 //获取单个商品
-export const getGoodsDetail = params => get(PRODUCT_URL + '/detail', params);
+export const getGoodsDetail = params => get(PRODUCT_URL + '/product/detail/' + params.id, null);
+
 
 //收藏商品
 export const postCollectAdd = params => post(USER_COLLECT_URL + '/add', params);

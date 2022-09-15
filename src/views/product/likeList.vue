@@ -5,24 +5,41 @@
       <el-divider class="likeListTit" content-position="center">猜你喜欢</el-divider>
       <span class="description">Guess you like it</span>
     </div>
-    <div class="likeListBox" v-for="i in 4" :key="i">
+    <div class="likeListBox" v-for="(val,index) in productList" :key="index" v-if="index < 4"
+         @click="goProductDetail(val.id)"
+    >
       <el-image
         style="width: 224px; height: 224px"
-        :src="url"
+        :src="img_url + val.image"
         fit="cover"></el-image>
       <div>
-        小米(MI) MIX2
+        {{ val.storeName }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {IMG_URL} from '../../api/api'
+
 export default {
   name: "likeList",
   data() {
     return {
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      img_url: IMG_URL,//图片地址前缀
+    }
+  },
+  props: ['productList'],
+  methods: {
+    goProductDetail(id) {
+      console.log(id)
+      this.$router.push({
+        name: 'productDetail',
+        query: {
+          productId: id
+        }
+      })
+      this.$router.go(0)
     }
   }
 }
@@ -46,5 +63,6 @@ export default {
 
 .likeListBox {
   margin-bottom: 30px;
+  cursor: pointer;
 }
 </style>

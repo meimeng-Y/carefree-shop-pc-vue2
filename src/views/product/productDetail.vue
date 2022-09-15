@@ -8,9 +8,9 @@
           <div class="swiper-box" style="height: 560px">
             <!-- swiper1 -->
             <swiper :options="swiperOptionTop" class="gallery-top" ref="swiperTop">
-              <swiper-slide v-for="(item, index) of 2" :key="index"
-                            :style="{backgroundImage: 'url('+ url +')'}" class="box-right">
-                {{ index + "right" }}
+              <swiper-slide v-for="(item, index) in storeInfoVal.sliderImageArr" :key="index"
+                            :style="{backgroundImage: 'url('+img_url + item +')'}" class="box-right">
+                <!--                {{ index + "right" }} 用来调试查看第几张图片-->
               </swiper-slide>
 
             </swiper>
@@ -18,10 +18,10 @@
             <div class="swiperThumbsLeft">
               <div class="thumbsBox">
                 <swiper :options="swiperOptionThumbs" class="gallery-thumbs" ref="swiperThumbs">
-                  <swiper-slide v-for="(item, index) of 2" :key="index"
-                                :style="{backgroundImage: 'url('+ url +')'}">
+                  <swiper-slide v-for="(item, index) in storeInfoVal.sliderImageArr" :key="index"
+                                :style="{backgroundImage: 'url(' +img_url + item +')'}">
                     <div style="width: 100%; height: 100%;" @click="thumbsClick(index)" class="box-left">
-                      {{ index }}
+                      <!--                      {{ index }} 用来调试查看第几张图片-->
                     </div>
                   </swiper-slide>
                 </swiper>
@@ -33,28 +33,31 @@
           <!--        轮播图end-->
           <!--        商品信息-->
           <div class="proDuctInfo">
-            <h3 class="productTit">华为畅享6S钢化膜</h3>
-            <p class="introduction">介绍</p>
+            <h3 class="productTit">{{ storeInfoVal.storeName }}</h3>
+            <p class="introduction">{{ storeInfoVal.storeInfo }}</p>
             <!--          价格-->
             <div class="priceDataInfo">
               <div class="promotionInfo">
                 <span>价格:</span>
-                <span>￥1220</span>
-                <span>￥12500</span>
+                <!--                默认显示第一个规格-->
+                <span>￥{{ skuInfo.price }}</span>
+                <span>￥{{ skuInfo.otPrice }}</span>
               </div>
             </div>
             <!--          价格end-->
             <!--          商品规格-->
             <div class='sku-box'>
-              <ul>
+              <ul v-for="(product,pIndex) in productAttr" :key="pIndex">
                 <li>
-                  <p class="proDescribeTit">分类类别</p>
+                  <!--                  规格的名称-->
+                  <p class="proDescribeTit">{{ product.attrName }}</p>
                   <p>
-                  <span>
-                   规格1
-                  </span>
-                    <span>
-                   规格2
+                  <span v-for="(val,aIndex) in product.attrValue" :key="aIndex"
+                        :class="{'selected-item': val.check}"
+                        @click='selectSku(pIndex, aIndex)'
+                  >
+                    <!--                    规格名称-->
+                   {{ val.attr }}
                   </span>
                   </p>
                 </li>
@@ -64,8 +67,8 @@
             <!--          商品数量-->
             <div class="productNumber">
               <div class="proDescribeTit">数量</div>
-              <el-input-number v-model="num" @change="handleChange" :min="1" :max="10"></el-input-number>
-              <span>库存40件</span>
+              <el-input-number v-model="num" @change="handleChange" :min="1" :max="skuInfo.stock"></el-input-number>
+              <span>库存{{ skuInfo.stock }}件</span>
             </div>
             <!--          商品数量end-->
             <!--          底部按钮-->
@@ -80,10 +83,10 @@
               <div class="favoritesBtn" @click="collect">
                 <!--              未收藏图标-->
                 <img class="favoritesBtn-icon"
-                     src="../../../static/image/sc0.png" alt="" v-if="false">
+                     src="../../../static/image/sc0.png" alt="" v-show="!userCollect">
                 <!--              收藏图标-->
                 <img class="favoritesBtn-icon"
-                     src="../../../static/image/sc1.png" alt="">
+                     src="../../../static/image/sc1.png" alt="" v-show="userCollect">
                 <span>收藏</span>
               </div>
             </div>
@@ -104,7 +107,10 @@
             <div class="detailInfoBox">
               <div v-show="currentComp==='detailData'">
                 <div class="detailBox">
-                  <div class="detailCont">显示的图片详情</div>
+                  <!--                  解析数据库中的html标签数据-->
+                  <div class="detailCont" v-html="replaceImgSrc(img_url,storeInfoVal.description)">
+                    <!--                    显示的图片详情 通过v-html进行插入-->
+                  </div>
                 </div>
               </div>
               <div v-show="currentComp==='evaluation'">
@@ -114,7 +120,7 @@
             </div>
             <div class="likeProductBox">
               <!--猜你喜欢组件-->
-              <like-list></like-list>
+              <like-list :product-list="Likes"></like-list>
             </div>
           </div>
           <!--        页面下部 宝贝详情+商品评论end-->
@@ -130,6 +136,7 @@
 
 import LikeList from "./likeList";
 import Evaluation from "./evaluation";
+import {getGoodsDetail, IMG_URL, postCollectAdd, postCollectDel, postCartAdd, getLike} from '../../api/api'
 
 export default {
 
@@ -138,14 +145,13 @@ export default {
   data() {
     return {
       currentComp: 'detailData',//显示的内容，默认显示详情
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      //右边的轮播图
+      //右边的轮播图设置
       swiperOptionTop: {
         spaceBetween: 10,//轮播图的距离之间设置距离
         loop: false,//首尾循环
         loopedSlides: 20//在启用loop（首尾循环）后，可以看到的轮播图的个数
       },
-      //左边的轮播图
+      //左边的轮播图设置
       swiperOptionThumbs: {
         // 设置点击箭头
         navigation: {
@@ -162,10 +168,79 @@ export default {
         watchSlidesVisibility: true,
         slideToClickedSlide: true,
       },
+      Likes: [], //猜你喜欢
       num: 1,//步进器
+      img_url: IMG_URL,//图片地址前缀
+      productId: '',//商品ID
+      storeInfoVal: {}, //商品信息
+      productAttr: [],//商品规格
+      productValue: {},//商品规格组合
+      specSelected: [], // 选中的规格
+      skuInfo: {}, // 选中的规格信息
+      userCollect: false, //收藏状态
+
+    }
+  },
+  watch: {
+    // 监听规格参数变化
+    specSelected(val) {
+      let sku = ''
+      val.forEach(
+        item => {
+          sku += item.attr + ','
+        })
+      sku = sku.substring(0, sku.length - 1) //将最后一个的 , 去掉
+      let specification = this.productValue
+      this.skuInfo = specification[sku]
     }
   },
   methods: {
+    init() {
+      //猜你喜欢
+      getLike().then(res => {
+        if (res.status == 200) {
+          // console.log(res)
+          this.Likes = res.data
+        }
+      })
+
+      let id = this.$route.query.productId
+      this.productId = id
+      getGoodsDetail({
+        id
+      }).then(res => {
+        // console.log(res)
+        //商品的基本信息
+        this.storeInfoVal = res.data.storeInfo
+        //商品规格详情
+        this.productValue = res.data.productValue
+        //商品规格
+        this.productAttr = res.data.productAttr
+        // 规格 默认选中第一条
+        this.productAttr.forEach(item => {
+          item.attrValue[0].check = true
+          this.specSelected.push(item.attrValue[0])
+        })
+        //判断是否收藏
+        if (this.storeInfoVal.userCollect) {
+          //收藏
+          this.userCollect = true
+        } else {
+          //未收藏
+          this.userCollect = false
+        }
+      })
+    },
+    //解析html标签
+    replaceImgSrc(basePrefix, questionContent) {
+      if (questionContent) {
+        questionContent = questionContent.replace(new RegExp(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi), function (match, capture) {
+          match = match.replace(new RegExp(capture, 'g'), basePrefix + capture)
+          return match
+        })
+        return questionContent
+      }
+    },
     handleChange(value) {
       console.log(value);
     },
@@ -187,15 +262,63 @@ export default {
     },
     // 收藏
     collect() {
+      if (!this.userCollect) {
+        postCollectAdd({
+          id: this.productId,
+          category: 'collect'
+        }).then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            this.$message.success('收藏成功')
+            this.userCollect = !this.userCollect
+          }
+        })
+      } else {
+        postCollectDel({
+          id: this.productId,
+          category: 'collect'
+        }).then(res => {
+          console.log(res)
+          if (res.status == 200) {
+            this.$message.success('取消成功')
+            this.userCollect = !this.userCollect
+          }
+        })
+      }
     },
     //更改显示的内容
     clickSwitchTab(type) {
       this.currentComp = type
     },
+    // 选择规格sku
+    selectSku(pIndex, aIndex) {
+      this.specSelected = [] //清空选中的规格
+      this.productAttr.forEach((item, index) => {
+        if (pIndex === index) {
+          //判断要修改的列与被点击的列相同
+          for (let i = 0; i < item.attrValue.length; i++) {
+            if (i === aIndex) {
+              item.attrValue[i].check = true
+            } else {
+              item.attrValue[i].check = false
+            }
+          }
+        }
+      })
+      //添加新选中的规格
+      this.productAttr.forEach(item => {
+        for (let i = 0; i < item.attrValue.length; i++) { //遍历规格的种类
+          if (item.attrValue[i].check) {//将选中的添加到选中的规格集合中
+            this.specSelected.push(item.attrValue[i])
+          }
+        }
+      })
+    }
   },
   mounted() {
+    this.init()
     this.$nextTick(() => {
-      //互相控制
+      //左右轮播图互相控制
       this.swiperTop = this.$refs.swiperTop.swiper
       this.swiperThumbs = this.$refs.swiperThumbs.swiper
       this.swiperTop.controller.control = this.swiperThumbs
@@ -512,5 +635,10 @@ export default {
     float: left;
     padding-left: 44px;
   }
+}
+
+.selected-item {
+  background: #FF7800 !important;
+  color: #FFFFFF !important;
 }
 </style>

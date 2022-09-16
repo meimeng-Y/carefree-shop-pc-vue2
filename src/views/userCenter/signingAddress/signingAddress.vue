@@ -3,12 +3,12 @@
   <div id="signingAddress">
     <el-row>
       <el-col :span="24" class="add-button-box">
-        <el-button class="add-button" @click="add_dialogVisible = true">新增收货地址</el-button>
+        <el-button class="add-button" @click="addAddr">新增收货地址</el-button>
       </el-col>
     </el-row>
 
     <el-row class="content-box" :gutter="20">
-      <el-col :span="12" v-for="i in 3" :key="i">
+      <el-col :span="12" v-for="item in Address" :key="item.id">
         <div class="">
           <!--          卡片内容区-->
           <el-card class="box-card" shadow="never">
@@ -16,29 +16,32 @@
               <span>设为默认地址</span>
               <!--              开关-->
               <el-switch
-                v-model="value"
+                v-model="item.isDefault"
+                :active-value='1'
+                :inactive-value='0'
+                @change=" onSubmit(item)"
                 active-color="#ff7800"
                 inactive-color="#c1c1c1">
               </el-switch>
               <!--              开关end-->
             </div>
             <div class="address-info">
-              <div>收货人：Hhhh</div>
-              <div>所在地区：河北省邯郸市复兴区</div>
-              <div>详细地址：Hhhh：Hhhh</div>
-              <div>手机号：18888888888：Hhhh</div>
+              <div>收货人：{{ item.realName }}</div>
+              <div>所在地区：{{ item.province + item.city + item.district }}</div>
+              <div>详细地址：{{ item.detail }}</div>
+              <div>手机号：{{ item.phone }}</div>
             </div>
           </el-card>
           <!--          卡片内容区end-->
           <div>
             <el-row class="address-icon">
               <el-col :span="12">
-                <div class="address-icon-click" @click="delete_dialogVisible = true">
+                <div class="address-icon-click" @click="delete_dialogVisible = true;setdel(item)">
                   <span><i class="el-icon-delete"></i>删除</span>
                 </div>
               </el-col>
               <el-col :span="12">
-                <div class="address-icon-click" @click="add_dialogVisible = true">
+                <div class="address-icon-click" @click="modify(item.id)">
                   <span @click=""><i class="el-icon-edit"></i>修改</span>
                 </div>
               </el-col>
@@ -56,24 +59,25 @@
       center
       id="del_dialog">
       <div class="deleteAddInfo">
-        <p>收货人： 1234</p>
-        <p>手机号码： 1234</p>
-        <p>收货地址： 1234</p>
+        <p>收货人： {{ delVal.realName }}</p>
+        <p>手机号码： {{ delVal.phone }}</p>
+        <p>收货地址： {{ delVal.province + delVal.city + delVal.district + delVal.detail }}</p>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="delete_dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="delSubmit(delVal.id);delete_dialogVisible = false">确 定</el-button>
         <el-button @click="delete_dialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
     <!--    删除框end-->
     <!--    新增框-->
     <el-dialog
-      title="新建收货地址"
+      :title="titleName"
       :visible.sync="add_dialogVisible"
       width="38%"
       center
       id="add_dialog">
-      <add-address @cancelAdd="closeAdd"></add-address>
+      <!--      使用v-if进行销毁，保证 add-address组件能被调用钩子函数-->
+      <add-address @cancelAdd="closeAdd" :modify-id="modifyId" v-if="add_dialogVisible"></add-address>
     </el-dialog>
     <!--    新增框end-->
 
@@ -82,15 +86,23 @@
 
 <script>
 import AddAddress from "../../../components/orderInfo/addAddress";
+import {postEdit, getAddressOne, postDelEdit, getAddress} from '../../../api/api'
 
 export default {
   name: "signingAddress",
   components: {AddAddress},
   data() {
     return {
+      titleName: '新建收货地址',
       value: true,
       delete_dialogVisible: false,//删除框
       add_dialogVisible: false,//新增框
+      Address: [],//地址列表
+      //分页
+      limit: 10,//页大小,默认为 10
+      page: 1,//页码,默认为1
+      delVal: [],
+      modifyId: 0 //要修改的ID
     }
   },
   methods: {
@@ -105,6 +117,58 @@ export default {
     closeAdd() {
       this.add_dialogVisible = false
     },
+    //提交数据
+    onSubmit(val) {
+      console.log(val)
+      postEdit(val).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.$message.success(res.msg)
+        } else {
+          this.$message.warning(res.msg)
+        }
+        this.$router.go(0)
+      })
+    },
+    //删除地址
+    delSubmit(id) {
+      postDelEdit({
+        id: id.toString()
+      }).then(res => {
+        if (res.status === 200) {
+          this.$message.success(res.msg)
+          this.$router.go(0)
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
+    },
+    //要删除的内容
+    setdel(val) {
+      // TODO 如果更多的信息要显示可以从后端请求
+      this.delVal = val
+    },
+    //修改
+    modify(id) {
+      this.add_dialogVisible = true;
+      this.titleName = "修改收货地址"
+      this.modifyId = id
+    },
+    //新增地址
+    addAddr() {
+      this.add_dialogVisible = true;
+      this.titleName = "新建收货地址"
+      this.modifyId = null
+    }
+  },
+  mounted() {
+    getAddress({
+      page: this.page,
+      limit: this.limit
+    }).then(res => {
+      console.log(res)
+      this.Address = res.data
+    })
   }
 }
 </script>

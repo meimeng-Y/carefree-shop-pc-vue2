@@ -27,15 +27,15 @@ const USER_URL = '/user' //用户有关前缀，需要token
 
 const USER_RECHARGE_URL = '/user/recharge' //用户充值
 
-const USER_ADDRESS_URL = '/user/address' //用户地址
+const USER_ADDRESS_URL = '/api/address' //用户地址
 
 const PRODUCT_URL = '/api' // 商品控制
 
 const USER_COLLECT_URL = '/api/collect' // 用户收藏
 
-const USER_CART_URL = '/user/cart' // 用户购物车
+const USER_CART_URL = '/api/cart' // 用户购物车
 
-const USER_ORDER_URL = '/user/order' // 用户订单
+const USER_ORDER_URL = '/api/order' // 用户订单
 
 const USER_REGISTER = '/api/register'
 // 注册
@@ -74,6 +74,12 @@ export const getAddress = params => get(USER_ADDRESS_URL + '/list', params);
 //新增或修改联系人列表
 export const postEdit = params => post(USER_ADDRESS_URL + '/edit', params);
 
+//删除联系人列表
+export const postDelEdit = params => post(USER_ADDRESS_URL + '/del', params);
+
+//获取城市列表
+export const getCityList = params => get(USER_ADDRESS_URL + '/city_list', params);
+
 //获取单个联系人
 export const getAddressOne = params => get(USER_ADDRESS_URL + '/detail', params);
 
@@ -107,6 +113,9 @@ export const postCartAdd = params => post(USER_CART_URL + '/add', params);
 
 //获取用户购物车
 export const getCartList = params => get(USER_CART_URL + '/list', params);
+
+//删除用户购物车商品
+export const postCartDelList = params => post(USER_CART_URL + '/del', params);
 
 //修改购物车商品数量
 export const postUpCartNum = params => post(USER_CART_URL + '/num', params);

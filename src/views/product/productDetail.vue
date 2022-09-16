@@ -250,6 +250,17 @@ export default {
     },
     // 加入购物车
     clickAddCart() {
+      postCartAdd({
+        cartNum: this.num, //商品数量
+        new: 0,//是否新购买
+        productId: this.productId,//商品ID
+        uniqueId: this.skuInfo.unique //商品规格的唯一值
+      }).then(res => {
+        console.log(res)
+        if (res.status == 200) {
+          this.$message.success('添加成功')
+        }
+      })
     },
     // 购买
     buyGood() {

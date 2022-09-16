@@ -15,6 +15,7 @@ import productDetail from '../views/product/productDetail'
 import placeOrder from '../views/placeOrder/placeOrder'
 import test from "../test/test";
 import test2 from "../test/test2";
+import shoppingCar from "../views/shoppingCar/shoppingCar";
 
 Vue.use(Router)
 
@@ -45,6 +46,7 @@ const router = new Router({
             // searchVisible: true
           }
         },
+        // 用户中心
         {
           path: '/userCenter',
           name: 'userCenter',
@@ -136,7 +138,18 @@ const router = new Router({
             // logoText: '',
             // searchVisible: true
           }
-        }
+        },
+        // 购物车
+        {
+          path: '/shoppingCar',
+          name: 'shoppingCar',
+          component: shoppingCar,
+          meta: {
+            logoText: '',
+            searchVisible: true
+          }
+
+        },
       ],
     },
     // 登录

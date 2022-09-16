@@ -44,7 +44,7 @@
           <el-col :span="4">
             <div class="grid-content ">
               <div class="item">
-                <a class="hover-item" @click="">购物车</a>
+                <a class="hover-item" @click="goToShopCart">购物车</a>
                 <i class="ico-arrow el-icon-arrow-down"></i>
               </div>
             </div>
@@ -109,6 +109,10 @@ export default {
           location.reload()
         }
       })
+    },
+    //跳转购物车
+    goToShopCart() {
+      this.$router.push({path: '/shoppingCar'})
     }
   },
   mounted() {

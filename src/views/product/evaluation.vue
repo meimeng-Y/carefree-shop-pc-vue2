@@ -61,7 +61,6 @@ export default {
       productId: '',//商品ID
       listPage: 1,//页码
       pageTotal: 0,//TODO 总条数用于分页
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     }
   },
   methods: {

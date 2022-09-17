@@ -12,7 +12,7 @@
           <el-col :span="22">
             <div class="grid-content ">
               <div class="welcome" @mouseover="isShowOut = true" @mouseleave="isShowOut = false" v-show="ifLogoin">
-                欢迎你 xxxxxxxx
+                欢迎你 {{ nickname }}
                 <span class="iconfont hoverShowOut"></span>
                 <div class="outLogin" v-show="isShowOut" @click="outLoginBtn">退出登录</div>
               </div>
@@ -90,6 +90,7 @@ export default {
     return {
       isShowOut: false,//显示退出登录按钮
       ifLogoin: false,//是否登录
+      nickname: '',//用户昵称
     }
   },
   methods: {
@@ -118,6 +119,11 @@ export default {
   mounted() {
     if (window.localStorage.getItem('token') != null) {
       this.ifLogoin = true
+    }
+    if (window.localStorage.getItem('userInfo') != null) {
+      let user = JSON.parse(window.localStorage.getItem('userInfo'))
+
+      this.nickname = user.nickname
     }
   }
 }

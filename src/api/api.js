@@ -23,7 +23,7 @@ const INDEX_URl = '/api/index' //首页前缀
 
 const CATEGORIES_URL = '/api' //商品分类前缀
 
-const USER_URL = '/user' //用户有关前缀，需要token
+const USER_URL = '/api' //用户有关前缀，需要token
 
 const USER_RECHARGE_URL = '/api/recharge' //用户充值
 
@@ -139,7 +139,7 @@ export const postOrderDetail = params => post(USER_ORDER_URL + '/detail', params
 export const getUserInfo = params => get(USER_URL + '/userInfo', params);
 
 //获取用户钱包
-export const getBalance = params => get(USER_URL + '/balance', params);
+export const getBalance = params => get(USER_URL + '/user/balance', params);
 
 //获取充值方案
 export const getRechargeIndex = params => get(USER_RECHARGE_URL + '/index', params);

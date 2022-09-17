@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import {login, register, registerCode} from '../../api/api.js'
+import {login, register, registerCode, getUserInfo} from '../../api/api.js'
 
 export default {
   name: "login",
@@ -85,6 +85,13 @@ export default {
         if (res.status === 200) {
           this.$message.success('登录成功！')
           window.localStorage.setItem('token', res.data.token)
+          //获取用户信息
+          getUserInfo().then(res => {
+            if (res.status == 200) {
+              window.localStorage.setItem('userInfo', JSON.stringify(res.data))
+              let user = JSON.parse(window.localStorage.getItem('userInfo'))
+            }
+          })
           this.$router.push('/index')
         } else if (res.status === 422) {
           this.$message.warning('账号或密码错误')

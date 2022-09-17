@@ -25,7 +25,7 @@ const CATEGORIES_URL = '/api' //商品分类前缀
 
 const USER_URL = '/user' //用户有关前缀，需要token
 
-const USER_RECHARGE_URL = '/user/recharge' //用户充值
+const USER_RECHARGE_URL = '/api/recharge' //用户充值
 
 const USER_ADDRESS_URL = '/api/address' //用户地址
 

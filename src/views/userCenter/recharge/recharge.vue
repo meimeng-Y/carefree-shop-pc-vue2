@@ -4,14 +4,14 @@
     <el-tabs v-model="activeName" @tab-click="handleClick" id="tab-top">
       <el-tab-pane label="充值方案" name="recharge">
         <div class="rechargeItem-box">
-          <div class="rechargeItem" v-for="i in 7">
+          <div class="rechargeItem" v-for="val in rechargePriceWays" :key="val.id">
             <div class="rechargeItemTop">
               <img src="../../../assets/images/indexLogo.png" alt="">
-              <span><i>￥</i>{{ 1000 }}</span>
-              <span>使用条件：充值￥{{ 1000 }} 赠送￥{{ 1000 }}</span>
-              <div class="rechargeType">充值</div>
+              <span><i>￥</i>{{ val.value.price }}</span>
+              <span>使用条件：充值￥{{ val.value.price }} 赠送￥{{ val.value.give_price }}</span>
+              <div class="rechargeType">充值</div> <!--   充值图标-->
             </div>
-            <div class="rechargeItemBot" @click="">
+            <div class="rechargeItemBot" @click="rechargeBut(val.id)">
               立即使用
             </div>
           </div>
@@ -22,17 +22,39 @@
 </template>
 
 <script>
+import {getBalance, getRechargeIndex, postRechargeTest} from '../../../api/api'
+
 export default {
   name: "recharge",
   data() {
     return {
-      activeName: 'recharge'
+      activeName: 'recharge',
+      rechargePriceWays: [], //充值方案全部
     };
   },
   methods: {
     handleClick(tab, event) {
       console.log(tab, event);
-    }
+    },
+    //模拟充值
+    rechargeBut(id) {
+      postRechargeTest({
+        rechar_id: id.toString()
+      }).then(res => {
+        if (res.status == 200) {
+          this.$message.success(res.data)
+        } else {
+          this.$message.warning(res.data)
+        }
+      })
+    },
+  },
+  mounted() {
+    //获取充值方案
+    getRechargeIndex().then(res => {
+      console.log(res)
+      this.rechargePriceWays = res.data.rechargePriceWays
+    })
   }
 }
 </script>
@@ -66,8 +88,9 @@ export default {
 .rechargeItem {
   width: 290px;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 25px;
   margin-bottom: 20px;
+  margin-right: 30px;
 }
 
 .rechargeItemTop {
@@ -126,7 +149,6 @@ export default {
 .rechargeItem-box {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: 0 30px;
 }
 

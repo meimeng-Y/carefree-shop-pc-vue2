@@ -168,6 +168,12 @@ export default {
     },
     // 结算
     submitOrder() {
+      this.$router.push({
+        name: 'placeOrder',
+        query: {
+          cartIds: this.checkList.toString()
+        }
+      })
     },
     //修改购物车数量
     onChange(val) {

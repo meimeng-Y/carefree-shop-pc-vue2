@@ -13,12 +13,12 @@
           </div>
           <div class="poAddList-content-box">
             <div class="showMoreBox" :class="{showMoreAdd: showMoreAddress}">
-              <div class="addressItem" v-for="(i,ind) in 3" :key="ind" @click="selectAddress(ind)"
-                   :class="{addressActive : currentAddressId === ind}"
+              <div class="addressItem" v-for="(item,index) in address" :key="index" @click="selectAddress(item.id)"
+                   :class="{addressActive : currentAddressId === item.id}"
               >
-                <span class="userName">Hhhh</span>
-                <span class="addressInfo">河北省邯郸市复兴区 Hhhh 地址</span>
-                <span class="phone">18888888888 手机号码</span>
+                <span class="userName">{{ item.realName }}</span>
+                <span class="addressInfo">{{ item.province + item.city + item.district }}</span>
+                <span class="phone">{{ item.phone }}</span>
               </div>
             </div>
             <div class="openMore" @click="openMoreAdd">
@@ -54,27 +54,27 @@
             </el-row>
             <!--            信息标题栏end-->
             <!--            信息内容栏-->
-            <el-row class="shopOrder">
+            <el-row class="shopOrder" v-for="val in cartInfo" :key="val.id">
               <el-col :span="8">
                 <div class="commodity">
                   <el-image
                     style="width: 80px; height: 80px"
-                    :src="url"
+                    :src="img_url+val.productInfo.image"
                     fit="cover"></el-image>
-                  商品名称
+                  {{ val.productInfo.storeName }}
                 </div>
               </el-col>
               <el-col :span="4">
-                <div class="">【纳米抗指纹】*2片</div>
+                <div class="">{{ val.productInfo.attrInfo.sku }}</div>
               </el-col>
               <el-col :span="4">
-                <div class="">￥20.00</div>
+                <div class="">￥{{ val.productInfo.attrInfo.price }}</div>
               </el-col>
               <el-col :span="4">
-                <div class="">1</div>
+                <div class="">{{ val.cartNum }}</div>
               </el-col>
               <el-col :span="4">
-                <div class="">￥20</div>
+                <div class="">￥{{ val.productInfo.attrInfo.price * val.cartNum }}</div>
               </el-col>
             </el-row>
             <!--            信息内容栏end-->
@@ -105,8 +105,8 @@
         </div>
         <!--        选择支付方式盒子end-->
         <div class="placeOrderBtn">
-          <span>运费：25</span>
-          <span>需付款：<b>￥2000</b></span>
+          <span>运费：{{ priceGroup.storeFreePostage === 1 ? '免运费' : '需要运费' }}</span>
+          <span>需付款：<b>￥{{ totalPrice }}</b></span>
           <el-button @click="orderSubmit" type="primary" v-throttle>提交订单</el-button>
         </div>
       </div>
@@ -115,14 +115,30 @@
 </template>
 
 <script>
+import {
+  getCartList,
+  IMG_URL,
+  postUpCartNum,
+  postOrderConfirm,
+  postCartDelList,
+  getAddress,
+  postOrderCreate
+} from '../../api/api'
+
 export default {
   name: "placeOrder",
   data() {
     return {
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      img_url: IMG_URL,
       textarea: '',
       showMoreAddress: false,//将地址进行显示或隐藏
       currentAddressId: '', // 选中地址id
+      orderKey: '',//订单的标识（ID)
+      cartInfo: [],//商品信息数据
+      userInfo: {},//用户信息
+      totalPrice: 0,//总价
+      priceGroup: {},//订单的汇总信息
+      address: [],//地址信息
     }
   },
   methods: {
@@ -132,11 +148,58 @@ export default {
     },
     // 选择地址
     selectAddress(item) {
+      console.log(item)
       this.currentAddressId = item
     },
     // 提交订单
     orderSubmit() {
+      postOrderCreate({
+        addressId: this.currentAddressId,//地址的ID
+        couponId: 0,//优惠券ID,功能为实现
+        key: this.orderKey,//确认订单的key
+        payType: 'yue',//支付方式 TODO 不知为何写死
+        shipping_type: '1',//配送方式 1=快递 ，2=门店自提
+        useIntegral: 0, //使用积分 1-表示使用
+        mark: '',//备注
+        from: 'h5',//来源
+        pinkId: 0,//拼团id 0没有拼团
+      }).then(res => {
+        // console.log(res)
+        if (res.status === 200) {
+          this.$message.success(res.msg)
+          setTimeout(() => {
+            //跳转的订单列表
+            this.$router.replace('/myOrder')
+          }, 3000)
+
+        } else {
+
+          this.$toast.fail(res.msg)
+        }
+      })
     }
+  },
+  mounted() {
+    // TODO 优化
+    let ids = []
+    let cartIds = this.$route.query.cartIds
+    console.log(cartIds)
+    ids = cartIds.split(',')
+    postOrderConfirm({
+      cartId: ids
+    }).then(res => {
+      // console.log(res)
+      this.cartInfo = res.data.cartInfo
+      this.userInfo = res.data.userInfo
+      this.orderKey = res.data.orderKey
+      this.priceGroup = res.data.priceGroup
+      this.totalPrice = this.priceGroup.totalPrice
+      //获取地址
+      getAddress().then(res => {
+        // console.log(res)
+        this.address = res.data
+      })
+    })
   }
 }
 </script>
@@ -238,7 +301,11 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
+  margin-left: 80px;
+
+  div {
+    margin-right: 20px;
+  }
 }
 
 .remarksInfo {

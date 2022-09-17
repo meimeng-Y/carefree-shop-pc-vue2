@@ -124,10 +124,10 @@ export const postUpCartNum = params => post(USER_CART_URL + '/num', params);
 export const postOrderConfirm = params => post(USER_ORDER_URL + '/confirm', params);
 
 //提交订单，并支付
-export const postOrderCreate = params => post(USER_ORDER_URL + '/create', params);
+export const postOrderCreate = params => post(USER_ORDER_URL + `/create//${params.key}`, params);
 
 //计算订单总价
-export const postOrderComputed = params => post(USER_ORDER_URL + '/computed', params);
+export const postOrderComputed = params => post(USER_ORDER_URL + `/computed/${params.key}`, params);
 
 //获取订单列表
 export const postOrderList = params => post(USER_ORDER_URL + '/list', params);

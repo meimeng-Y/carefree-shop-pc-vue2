@@ -41,19 +41,19 @@
     </el-row>
     <!--    顶列end-->
 
-    <el-row id="commodity-lower">
+    <el-row id="commodity-lower" v-for="listval in orderList" :key="listval.id">
       <!--      订单时间+订单号-->
       <el-col :span="24" class="order-time">
         <div class="">
           <el-row>
             <el-col :span="5">
               <div class="">
-                时间:2022-09-06 17:53:28
+                时间:{{ listval.createTime }}
               </div>
             </el-col>
             <el-col :span="5">
               <div class="">
-                订单号:1567088582298959872
+                订单号:{{ listval.orderId }}
               </div>
             </el-col>
           </el-row>
@@ -62,32 +62,32 @@
       <!--      订单时间+订单号end-->
       <!--      订单内容-->
       <el-col :span="24">
-        <el-row id="commodity">
+        <el-row id="commodity" v-for="commodity in listval.cartInfo" :key="commodity.id">
           <!--          商品名称+单价+数量布局-->
           <el-col :span="13">
             <div class="">
               <!--              商品名称+单价+数量内容-->
-              <el-row id="commodity-left" v-for="i in 2" :key="i">
+              <el-row id="commodity-left">
                 <el-col :span="12" :offset="1">
                   <div class="img-title">
                     <el-image
                       style="width: 100px; height: 100px"
-                      src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+                      :src="img_url + commodity.productInfo.image"
                       fit="cover"></el-image>
                     <div class="img-title-p">
-                      <p>浪漫姐妹 秋冬毛呢西装外套</p>
-                      <p>xxl</p>
+                      <p>{{ commodity.productInfo.storeName }}</p>
+                      <p>{{ commodity.productInfo.attrInfo.sku }}</p>
                     </div>
                   </div>
                 </el-col>
                 <el-col :span="5">
-                  <div class=" bg-purple-dark">
-                    ￥1280.00
+                  <div class=" ">
+                    ￥{{ commodity.productInfo.attrInfo.price }}
                   </div>
                 </el-col>
                 <el-col :span="5" :offset="1">
                   <div class="">
-                    1
+                    {{ commodity.cartNum }}
                   </div>
                 </el-col>
               </el-row>
@@ -100,20 +100,27 @@
             <div id="commodity-right">
               <el-row>
                 <el-col :span="6">
-                  <div class="">收货人</div>
+                  <div class="">{{ listval.realName }}</div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="">实付款</div>
+                  <div class="">{{ listval.payPrice }}</div>
                 </el-col>
                 <el-col :span="6">
-                  <div class="">待付款</div>
+                  <div class="" v-if="listval.statusDto.type === '0' ">待付款</div>
+                  <div class="" v-if="listval.statusDto.type === '1' ">待发货</div>
+                  <div class="" v-if="listval.statusDto.type === '2' ">待收货</div>
+                  <div class="" v-if="listval.statusDto.type === '3' ">待评价</div>
+                  <div class="" v-if="listval.statusDto.type === '4' ">已完成</div>
+                  <p class="orderDetails" @click="toOrderDetail(listval.unique)">订单详情</p>
                 </el-col>
                 <el-col :span="6">
                   <div class="commodity-button">
-                    <el-button type="primary" size="small">立即支付</el-button>
-                    <el-button type="text" size="small">删除订单</el-button>
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 0">立即支付</el-button>
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 1">提醒发货</el-button>
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 2">确认收货</el-button>
+                    <el-button type="text" size="small" v-if="listval.statusDto.type == 0">取消订单</el-button>
+                    <el-button type="text" size="small" v-if="listval.statusDto.type == 4">删除订单</el-button>
                   </div>
-
                 </el-col>
               </el-row>
             </div>
@@ -126,14 +133,52 @@
     <el-pagination
       background
       layout="prev, pager, next"
-      :total="1000">
+      :total="totalElements">
     </el-pagination>
   </div>
 </template>
 
 <script>
+import {
+  getOrderList,
+  IMG_URL,
+  postOrderConfirm,
+  getAddress,
+  postOrderCreate,
+} from '../../api/api'
+
 export default {
-  name: "orderList"
+  name: "orderList",
+  data() {
+    return {
+      img_url: IMG_URL,
+      orderList: {},//订单数据
+      totalElements: 0//总大小
+    }
+  },
+  methods: {
+    // 跳转到订单详情
+    toOrderDetail(id) {
+      this.$router.push({
+        path: '/orderDetail',
+        query: {
+          key: id
+        }
+      })
+    },
+  },
+  props: ['type'],
+  mounted() {
+    getOrderList({
+      type: this.type,
+      limit: 10,//页大小,默认为 10
+      page: 1,//页码,默认为1
+    }).then(res => {
+      console.log(res)
+      this.orderList = res.data.content
+      this.totalElements = res.data.totalElements
+    })
+  }
 }
 </script>
 
@@ -142,21 +187,6 @@ export default {
   //background: #99a9bf;
   min-height: 60px;
 
-  & > .el-row:nth-child(1) > .el-col:nth-child(1) > div {
-    background: #99a9bf;
-  }
-
-  & > .el-row:nth-child(1) > .el-col:nth-child(3) > div {
-    background: #99a9bf;
-  }
-
-  & > .el-row:nth-child(1) > .el-col:nth-child(5) > div {
-    background: #99a9bf;
-  }
-
-  & > .el-row:nth-child(1) > .el-col:nth-child(7) > div {
-    background: #99a9bf;
-  }
 
   & > .el-row:nth-child(1) {
     height: 50px;
@@ -179,11 +209,6 @@ export default {
       }
     }
   }
-}
-
-
-.bg-purple-dark {
-  background: #999999;
 }
 
 #commodity-left {
@@ -244,6 +269,7 @@ export default {
 
 #commodity-lower {
   border: 1px solid #E5E5E5;
+  margin-bottom: 20px;
 }
 
 .commodity-button {
@@ -258,5 +284,9 @@ export default {
 
 .el-pagination {
   margin-top: 40px;
+}
+
+.orderDetails {
+  cursor: pointer;
 }
 </style>

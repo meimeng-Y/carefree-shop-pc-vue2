@@ -116,11 +116,8 @@
 
 <script>
 import {
-  getCartList,
   IMG_URL,
-  postUpCartNum,
   postOrderConfirm,
-  postCartDelList,
   getAddress,
   postOrderCreate
 } from '../../api/api'

@@ -16,6 +16,7 @@ import placeOrder from '../views/placeOrder/placeOrder'
 import test from "../test/test";
 import test2 from "../test/test2";
 import shoppingCar from "../views/shoppingCar/shoppingCar";
+import orderDetail from "../views/orderDetail/orderDetail";
 
 Vue.use(Router)
 
@@ -148,7 +149,16 @@ const router = new Router({
             logoText: '',
             searchVisible: true
           }
-
+        },
+        //我的订单
+        {
+          path: '/orderDetail',
+          name: 'orderDetail',
+          component: orderDetail,
+          meta: {
+            // logoText: '',
+            // searchVisible: false
+          }
         },
       ],
     },

@@ -130,10 +130,10 @@ export const postOrderCreate = params => post(USER_ORDER_URL + `/create//${param
 export const postOrderComputed = params => post(USER_ORDER_URL + `/computed/${params.key}`, params);
 
 //获取订单列表
-export const postOrderList = params => post(USER_ORDER_URL + '/list', params);
+export const getOrderList = params => get(USER_ORDER_URL + '/list', params);
 
 //获取订单详情
-export const postOrderDetail = params => post(USER_ORDER_URL + '/detail', params);
+export const getOrderDetail = params => get(USER_ORDER_URL + `/detail/${params.key}`, null);
 
 //获取用户信息
 export const getUserInfo = params => get(USER_URL + '/userInfo', params);

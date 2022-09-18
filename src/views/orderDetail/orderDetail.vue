@@ -6,11 +6,11 @@
         <div>
           <!--        导航条-->
           <div class="head">
-            <div class="goOrder" @click='to="/myOrder"'>我的订单</div>
+            <div class="goOrder" @click=''>我的订单</div>
             <div>
               <i class="el-icon-arrow-right"> </i>
             </div>
-            <div class="mar-right-10">订单详情</div>
+            <div>订单详情</div>
           </div>
           <!--        导航条end-->
           <!--          流程图-->
@@ -20,22 +20,24 @@
                 订单号：{{ order.orderId }}
               </div>
               <div>
-                <div class="box" v-if="order.statusDto && order.statusDto.type==0">
-                  <p class="fs24 fw-blod mar-bot-10 font-color-71B">等待付款</p>
-                  <el-button plain size="small" @click="closeOrder" class="cancel mar-bot-10">取消订单</el-button>
-                  <el-button plain size="small" @click="getUrl" class="pay mar-bot-10">付款</el-button>
+                <div v-if="order.statusDto && order.statusDto.type==0">
+                  <p>等待付款</p>
+                  <el-button plain size="small" @click="closeOrder(order.orderId)">
+                    取消订单
+                  </el-button>
+                  <el-button plain size="small" @click="getUrl">付款</el-button>
                 </div>
-                <div class="box mar-top-40" v-if="order.statusDto && order.statusDto.type==1">
-                  <p class="fs24 fw-blod font-color-FF7">待发货</p>
+                <div v-if="order.statusDto && order.statusDto.type==1">
+                  <p>待发货</p>
                 </div>
-                <div class="box mar-top-40" v-if="order.statusDto && order.statusDto.type==2">
-                  <p class="fs24 fw-blod mar-bot-10 font-color-FF7">待收货</p>
+                <div v-if="order.statusDto && order.statusDto.type==2">
+                  <p>待收货</p>
                 </div>
                 <div class="box mar-top-40" v-if="order.statusDto && order.statusDto.type==3">
-                  <p class="">待评价</p>
+                  <p>待评价</p>
                 </div>
-                <div class="" v-if="order.statusDto && order.statusDto.type==4">
-                  <p class="">已完成</p>
+                <div v-if="order.statusDto && order.statusDto.type==4">
+                  <p>已完成</p>
                 </div>
               </div>
             </div>
@@ -64,8 +66,8 @@
             <div class="info war-box">
               <div>订单信息</div>
               <div>
-                <p>订单号:{{ order.userAddress }}</p>
-                <p>创建时间：{{ order.realName }}</p>
+                <p>订单号:{{ order.orderId }}</p>
+                <p>创建时间：{{ order.createTime }}</p>
                 <p>备注：{{ order.remark }}</p>
               </div>
             </div>
@@ -120,7 +122,7 @@
 </template>
 
 <script>
-import {getOrderDetail, IMG_URL} from "../../api/api";
+import {getOrderDetail, IMG_URL, postOrderCancel} from "../../api/api";
 
 export default {
   name: "orderDetail",
@@ -133,8 +135,12 @@ export default {
   },
   methods: {
     //取消订单
-    closeOrder() {
-
+    closeOrder(val) {
+      postOrderCancel({
+        id: val.toString()
+      }).then(res => {
+        console.log(res)
+      })
     },
     //付款
     getUrl() {
@@ -264,8 +270,6 @@ export default {
     align-items: center;
     margin-left: 25px;
   }
-
-  display: flex;
 
   & > div {
     flex: 1;

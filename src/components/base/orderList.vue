@@ -115,10 +115,16 @@
                 </el-col>
                 <el-col :span="6">
                   <div class="commodity-button">
-                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 0">立即支付</el-button>
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 0"
+                               @click="payOrder(listval.orderId)">
+                      立即支付
+                    </el-button>
                     <el-button type="primary" size="small" v-if="listval.statusDto.type == 1">提醒发货</el-button>
                     <el-button type="primary" size="small" v-if="listval.statusDto.type == 2">确认收货</el-button>
-                    <el-button type="text" size="small" v-if="listval.statusDto.type == 0">取消订单</el-button>
+                    <el-button type="text" size="small" v-if="listval.statusDto.type == 0"
+                               @click="closeOrder(listval.orderId)">
+                      取消订单
+                    </el-button>
                     <el-button type="text" size="small" v-if="listval.statusDto.type == 4">删除订单</el-button>
                   </div>
                 </el-col>
@@ -139,13 +145,7 @@
 </template>
 
 <script>
-import {
-  getOrderList,
-  IMG_URL,
-  postOrderConfirm,
-  getAddress,
-  postOrderCreate,
-} from '../../api/api'
+import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '../../api/api'
 
 export default {
   name: "orderList",
@@ -166,6 +166,24 @@ export default {
         }
       })
     },
+    //取消订单
+    closeOrder(id) {
+      postOrderCancel({
+        id: id.toString()
+      }).then(res => {
+        console.log(res)
+      })
+    },
+    //支付订单
+    payOrder(id) {
+      postOrderPay({
+        from: "h5", //支付来源
+        paytype: "yue", //支付渠道
+        uni: id //订单ID
+      }).then(res => {
+        console.log(res)
+      })
+    }
   },
   props: ['type'],
   mounted() {

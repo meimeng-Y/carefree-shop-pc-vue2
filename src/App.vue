@@ -5,8 +5,23 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
+
 export default {
-  name: 'App'
+  name: 'App',
+  created() {
+
+  },
+  methods: {
+    ...mapMutations(['setuserInfoVal']),
+  },
+  mounted() {
+    if (localStorage.getItem('userInfo') != null) {
+      let userinfo = JSON.parse(localStorage.getItem('userInfo'))
+      // console.log(userinfo)
+      this.setuserInfoVal(userinfo)
+    }
+  }
 }
 </script>
 

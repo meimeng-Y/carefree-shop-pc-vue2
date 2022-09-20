@@ -14,7 +14,7 @@
                   <li v-for="val in categorys" :key="val.id">
                     <!--              一级分类-->
                     <a>{{ val.cateName }}</a>
-                    <p>
+                    <p class="sortLsit">
                       <template v-for="chil in val.children">
                         <!--              二级分类-->
                         <a :key="chil.id" @click="jumpCategory(chil.id,chil.cateName)">{{ chil.cateName }}</a>
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import {getCategory, IMG_URL, getBoutiqueList, getLike, getBanner} from '../../api/api'
+import {getBanner, getBoutiqueList, getCategory, getLike, IMG_URL} from '../../api/api'
 import ProductList from "../../components/base/productList";
 
 export default {
@@ -238,5 +238,11 @@ export default {
   color: #333333;
   font-weight: 600;
   text-align: left;
+}
+
+.sortLsit {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 </style>

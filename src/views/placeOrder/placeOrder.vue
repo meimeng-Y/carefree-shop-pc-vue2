@@ -115,12 +115,7 @@
 </template>
 
 <script>
-import {
-  IMG_URL,
-  postOrderConfirm,
-  getAddress,
-  postOrderCreate
-} from '../../api/api'
+import {getAddress, IMG_URL, postOrderConfirm, postOrderCreate} from '../../api/api'
 
 export default {
   name: "placeOrder",
@@ -177,7 +172,6 @@ export default {
     }
   },
   mounted() {
-    // TODO 优化
     let ids = []
     let cartIds = this.$route.query.cartIds
     console.log(cartIds)

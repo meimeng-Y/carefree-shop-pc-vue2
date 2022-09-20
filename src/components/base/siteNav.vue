@@ -11,12 +11,12 @@
           <!--    占位end-->
           <el-col :span="22">
             <div class="grid-content ">
-              <div class="welcome" @mouseover="isShowOut = true" @mouseleave="isShowOut = false" v-show="ifLogoin">
-                欢迎你 {{ nickname }}
+              <div v-show="ifLogoin" class="welcome" @mouseleave="isShowOut = false" @mouseover="isShowOut = true">
+                欢迎你 {{ userinfo.nickname }}
                 <span class="iconfont hoverShowOut"></span>
-                <div class="outLogin" v-show="isShowOut" @click="outLoginBtn">退出登录</div>
+                <div v-show="isShowOut" class="outLogin" @click="outLoginBtn">退出登录</div>
               </div>
-              <div class="grid-content t_login" v-show="!ifLogoin">
+              <div v-show="!ifLogoin" class="grid-content t_login">
                 你好 请先 <span @click="loginBtn(2)">登录</span> 或 <span @click="loginBtn(1)">注册</span>
               </div>
             </div>
@@ -37,7 +37,7 @@
           <el-col :span="4">
             <div class="grid-content ">
               <div class="item">
-                <a class="hover-item" @click="">我的订单</a>
+                <a class="hover-item" @click="$router.push('/myOrder')">我的订单</a>
               </div>
             </div>
           </el-col>
@@ -59,10 +59,10 @@
                 </span>
                 <div class="cart-box user-box">
                   <ul>
-                    <li @click="goToUserInfo">个人信息</li>
-                    <li @click="">我的订单</li>
-                    <li @click="">收货地址</li>
-                    <li @click="">钱包充值</li>
+                    <li @click="$router.push('/userInfo')">个人信息</li>
+                    <li @click="$router.push('/myOrder')">我的订单</li>
+                    <li @click="$router.push('/signingAddress')">收货地址</li>
+                    <li @click="$router.push('/recharge')">钱包充值</li>
                   </ul>
                 </div>
               </div>
@@ -82,7 +82,8 @@
 </template>
 
 <script>
-import {getUserInfo, loginOut} from '../../api/api'
+import {loginOut} from '@/api/api'
+import {mapGetters} from 'vuex'
 
 export default {
   name: "siteNav",
@@ -92,6 +93,12 @@ export default {
       ifLogoin: false,//是否登录
       nickname: '',//用户昵称
     }
+  },
+  computed: {
+    //命名空间映射
+    ...mapGetters({
+      userinfo: 'getuserInfoVal'
+    }),
   },
   methods: {
     //登录或注册
@@ -103,7 +110,7 @@ export default {
     },
     outLoginBtn() {
       loginOut().then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           window.localStorage.removeItem('token')
           window.localStorage.removeItem('userInfo')
           this.$message.success(res.data)

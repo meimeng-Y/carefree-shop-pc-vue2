@@ -20,6 +20,10 @@ import orderDetail from "../views/orderDetail/orderDetail";
 
 Vue.use(Router)
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 const router = new Router({
   routes: [
     {
@@ -32,20 +36,14 @@ const router = new Router({
           path: '/index',
           name: 'index',
           component: index,
-          meta: {
-            // logoText: '',
-            // searchVisible: true
-          }
+          meta: {}
         },
         // 商品分类
         {
           path: '/category',
           name: 'category',
           component: category,
-          meta: {
-            // logoText: '',
-            // searchVisible: true
-          }
+          meta: {}
         },
         // 用户中心
         {
@@ -53,8 +51,7 @@ const router = new Router({
           name: 'userCenter',
           component: userCenter,
           meta: {
-            // logoText: '',
-            // searchVisible: true
+            isToken: true,
           },
           children: [
             //用户信息
@@ -63,8 +60,7 @@ const router = new Router({
               name: 'userInfo',
               component: userInfo,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
             //我的订单
@@ -73,8 +69,7 @@ const router = new Router({
               name: 'myOrder',
               component: myOrder,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
             //地址信息
@@ -83,8 +78,7 @@ const router = new Router({
               name: 'signingAddress',
               component: signingAddress,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
             //钱包充值
@@ -93,8 +87,7 @@ const router = new Router({
               name: 'recharge',
               component: recharge,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
             //收藏的商品列表
@@ -103,8 +96,7 @@ const router = new Router({
               name: 'favorites',
               component: favorites,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
             //足迹列表
@@ -113,8 +105,7 @@ const router = new Router({
               name: 'browseRecords',
               component: browseRecords,
               meta: {
-                // logoText: '',
-                // searchVisible: false
+                isToken: true,
               }
             },
 
@@ -125,10 +116,7 @@ const router = new Router({
           path: '/productDetail',
           name: 'productDetail',
           component: productDetail,
-          meta: {
-            // logoText: '',
-            // searchVisible: true
-          }
+          meta: {}
         },
         // 下单页面
         {
@@ -136,8 +124,7 @@ const router = new Router({
           name: 'placeOrder',
           component: placeOrder,
           meta: {
-            // logoText: '',
-            // searchVisible: true
+            isToken: true,
           }
         },
         // 购物车
@@ -146,8 +133,7 @@ const router = new Router({
           name: 'shoppingCar',
           component: shoppingCar,
           meta: {
-            logoText: '',
-            searchVisible: true
+            isToken: true,
           }
         },
         //我的订单
@@ -156,8 +142,7 @@ const router = new Router({
           name: 'orderDetail',
           component: orderDetail,
           meta: {
-            // logoText: '',
-            // searchVisible: false
+            isToken: true,
           }
         },
       ],
@@ -197,7 +182,12 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    next()
+    if (to.path === '/') {
+      // 重定向到首页
+      return next("/index")
+    } else {
+      next()
+    }
   }
 })
 

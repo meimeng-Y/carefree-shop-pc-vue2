@@ -5,7 +5,7 @@
     <div class="loginTop">
       <div class="login-logo">
         <div class="loginImgBox">
-          <img src="@/assets/images/cereshop/home/eshop.png" alt="">
+          <img src="@/assets/images/cereshop/home/eshop.png" alt="" @click="$router.push('/index')">
         </div>
         <span>欢迎来到PC商城</span>
       </div>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import {login, register, registerCode, getUserInfo} from '../../api/api.js'
+import {getUserInfo, login, register, registerCode} from '@/api/api'
 
 export default {
   name: "login",
@@ -87,7 +87,7 @@ export default {
           window.localStorage.setItem('token', res.data.token)
           //获取用户信息
           getUserInfo().then(res => {
-            if (res.status == 200) {
+            if (res.status === 200) {
               window.localStorage.setItem('userInfo', JSON.stringify(res.data))
               let user = JSON.parse(window.localStorage.getItem('userInfo'))
             }
@@ -108,10 +108,10 @@ export default {
         'password': this.formLogin.password,
         'nickname': this.formLogin.nickname, //用户昵称
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success(res.msg)
           this.type = '2'
-        } else if (res.status == 422) {
+        } else if (res.status === 422) {
           this.$message.warning(res.msg)
         } else {
           this.$message.warning(res.msg)

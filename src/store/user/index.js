@@ -1,7 +1,7 @@
 export default {
   //搜索框
   state: {
-    userInfo: {} //用户信息
+    userInfo: window.localStorage.getItem('userInfo') != null ? JSON.parse(window.localStorage.getItem('userInfo')) : {} //用户信息
   },
   mutations: {
     setuserInfoVal(state, userInfo) {
@@ -13,4 +13,5 @@ export default {
       return state.userInfo
     }
   },
+
 }

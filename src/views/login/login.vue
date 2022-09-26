@@ -58,6 +58,7 @@
 
 <script>
 import {getUserInfo, login, register, registerCode} from '@/api/api'
+import {mapMutations} from "vuex";
 
 export default {
   name: "login",
@@ -76,6 +77,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'setuserInfoVal'
+    ]),
     //登录
     getLogin() {
       login({
@@ -89,6 +93,7 @@ export default {
           getUserInfo().then(res => {
             if (res.status === 200) {
               window.localStorage.setItem('userInfo', JSON.stringify(res.data))
+              this.setuserInfoVal(res.data)
               let user = JSON.parse(window.localStorage.getItem('userInfo'))
             }
           })

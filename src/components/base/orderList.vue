@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '@/api/api'
+import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '../../api/api'
 
 export default {
   name: "orderList",

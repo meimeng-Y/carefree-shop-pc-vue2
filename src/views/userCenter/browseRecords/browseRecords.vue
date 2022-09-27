@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '@/api/api'
+import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '../../../api/api'
 
 export default {
   name: "browseRecords",

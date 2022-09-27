@@ -90,7 +90,7 @@
 
 <script>
 import AddAddress from "../../../components/orderInfo/addAddress";
-import {getAddress, postDelEdit, postEdit} from '@/api/api'
+import {getAddress, postDelEdit, postEdit} from '../../../api/api'
 
 export default {
   name: "signingAddress",

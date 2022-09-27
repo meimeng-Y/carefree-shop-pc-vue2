@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {getAddressOne, getCityList, postEdit} from '@/api/api'
+import {getAddressOne, getCityList, postEdit} from '../../api/api'
 
 
 export default {

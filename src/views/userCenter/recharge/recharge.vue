@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {getRechargeIndex, postRechargeTest} from '@/api/api'
+import {getRechargeIndex, postRechargeTest} from '../../../api/api'
 
 export default {
   name: "recharge",

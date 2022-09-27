@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import {getBanner, getBoutiqueList, getCategory, getLike, IMG_URL} from '@/api/api'
+import {getBanner, getBoutiqueList, getCategory, getLike, IMG_URL} from '../../api/api'
 import ProductList from "../../components/base/productList";
 
 export default {

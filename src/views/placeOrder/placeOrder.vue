@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import {getAddress, IMG_URL, postOrderConfirm, postOrderCreate} from '@/api/api'
+import {getAddress, IMG_URL, postOrderConfirm, postOrderCreate} from '../../api/api'
 
 export default {
   name: "placeOrder",

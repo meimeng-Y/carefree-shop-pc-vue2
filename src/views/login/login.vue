@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import {getUserInfo, login, register, registerCode} from '@/api/api'
+import {getUserInfo, login, register, registerCode} from '../../api/api'
 import {mapMutations} from "vuex";
 
 export default {

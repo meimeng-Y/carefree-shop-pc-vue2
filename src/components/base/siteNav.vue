@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import {loginOut} from '@/api/api'
+import {loginOut} from '../../api/api'
 import {mapGetters} from 'vuex'
 
 export default {

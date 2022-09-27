@@ -110,8 +110,7 @@ export default {
     }
   },
   mounted() {
-    let id = this.$route.query.productId
-    this.productId = id
+    this.productId = this.$route.query.productId
     this.init()
   }
 }

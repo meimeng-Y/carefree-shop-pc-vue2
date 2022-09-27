@@ -32,8 +32,8 @@
                             <div class="price-collation" :class="{activation : activation_sort ===2}"
                                  @click="priceSort()">价格
                               <div class='arr'>
-                                <div class='up' :class="priceOrder=='asc'?'low':''"></div>
-                                <div class='down' :class="priceOrder=='desc'?'high':''"></div>
+                                <div class='up' :class="priceOrder==='asc'?'low':''"></div>
+                                <div class='down' :class="priceOrder==='desc'?'high':''"></div>
                                 <!--                                <div class='up'></div>-->
                                 <!--                                <div class='down'></div>-->
                               </div>
@@ -78,7 +78,7 @@
 
 <script>
 import ProductList from "../../components/base/productList";
-import {IMG_URL, getGoodsList} from '../../api/api'
+import {getGoodsList} from '@/api/api'
 import {createNamespacedHelpers} from 'vuex'
 
 const {mapMutations, mapGetters} = createNamespacedHelpers('search')

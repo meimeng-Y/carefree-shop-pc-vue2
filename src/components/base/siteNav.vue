@@ -173,6 +173,10 @@ export default {
     &:hover {
       background-color: #fff;
 
+      .hover-item {
+        color: #FF7800;
+      }
+
       & .user-box ul {
         display: block;
       }
@@ -220,4 +224,5 @@ export default {
     }
   }
 }
+
 </style>

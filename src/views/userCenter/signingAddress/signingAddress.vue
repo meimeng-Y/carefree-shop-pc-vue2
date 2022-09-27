@@ -7,9 +7,9 @@
       </el-col>
     </el-row>
 
-    <el-row class="content-box" :gutter="20">
+    <el-row class="content-box" :gutter="20" v-if="isShow">
       <el-col :span="12" v-for="item in Address" :key="item.id">
-        <div class="">
+        <div class="carBox">
           <!--          卡片内容区-->
           <el-card class="box-card" shadow="never">
             <div class="is-default-switch">
@@ -50,6 +50,10 @@
         </div>
       </el-col>
     </el-row>
+    <!--    没有内容时的空状态时占位提示-->
+    <el-empty description="没有收货地址" v-if="!isShow">
+    </el-empty>
+    <!--    没有内容时的空状态时占位提示end-->
     <!--    删除框-->
     <el-dialog
       title="是否删除此项"
@@ -86,7 +90,7 @@
 
 <script>
 import AddAddress from "../../../components/orderInfo/addAddress";
-import {postEdit, getAddressOne, postDelEdit, getAddress} from '../../../api/api'
+import {getAddress, postDelEdit, postEdit} from '@/api/api'
 
 export default {
   name: "signingAddress",
@@ -102,7 +106,8 @@ export default {
       limit: 10,//页大小,默认为 10
       page: 1,//页码,默认为1
       delVal: [],
-      modifyId: 0 //要修改的ID
+      modifyId: 0,//要修改的ID
+      isShow: true,//控制没有内容时的空状态时占位提示
     }
   },
   methods: {
@@ -166,17 +171,29 @@ export default {
       page: this.page,
       limit: this.limit
     }).then(res => {
-      console.log(res)
-      this.Address = res.data
+      if (res.status === 200) {
+        if (res.data.length > 0) {
+          console.log(res)
+          this.Address = res.data
+        } else {
+          this.isShow = false
+          return
+        }
+        this.isShow = true
+      } else {
+        this.$message.warning('获取数据失败')
+      }
     })
   }
 }
 </script>
 
 <style lang="less" scoped>
+
 #signingAddress {
-  padding: 30px;
   border: 1px solid #E5E5E5;
+  padding: 0 30px;
+  height: 100%;
 }
 
 .add-button-box {
@@ -184,6 +201,7 @@ export default {
 }
 
 .add-button {
+  margin-top: 25px;
   border: 1px solid #FF7800;
   color: #FF7800;
 
@@ -274,4 +292,9 @@ export default {
     height: 45px;
   }
 }
+
+.carBox {
+  height: 100%;
+}
+
 </style>

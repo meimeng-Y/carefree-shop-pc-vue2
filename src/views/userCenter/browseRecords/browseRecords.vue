@@ -46,14 +46,17 @@
             </div>
           </div>
         </el-col>
-
+        <!--    没有内容时的空状态时占位提示-->
+        <el-empty description="没有浏览足迹" v-if="isShow">
+        </el-empty>
+        <!--    没有内容时的空状态时占位提示end-->
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import {getCollectAll, IMG_URL, postCollectDels, postCollectDel} from '../../../api/api'
+import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '@/api/api'
 
 export default {
   name: "browseRecords",
@@ -65,6 +68,7 @@ export default {
       edit: false,//显示批量操作按钮
       collectlist: [],//足迹列表
       queryType: 'foot',//查询的商品类型
+      isShow: false,//控制没有内容时的空状态时占位提示
     };
   },
   watch: {
@@ -138,7 +142,7 @@ export default {
         ids: listId //字符串格式
       }).then(res => {
         console.log(res)
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('删除成功')
           //刷新数据
           this.init()
@@ -168,7 +172,7 @@ export default {
         category: this.queryType
       }).then(res => {
         console.log(res)
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('取消成功')
           this.init()
         }
@@ -186,6 +190,10 @@ export default {
 
 <style lang="less" scoped>
 #browseRecords {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   .browseRecords-top {
     height: 56px;
     border: 1px solid #E5E5E5;
@@ -300,5 +308,9 @@ export default {
 .selected:before {
   background: url("./../../../assets/images/edit.png");
   background-size: cover;
+}
+
+#browseRecords-content {
+  height: 100%;
 }
 </style>

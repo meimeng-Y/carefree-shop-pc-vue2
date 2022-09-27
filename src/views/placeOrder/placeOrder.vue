@@ -150,7 +150,7 @@ export default {
         couponId: 0,//优惠券ID,功能为实现
         key: this.orderKey,//确认订单的key
         payType: 'yue',//支付方式 TODO 不知为何写死
-        shipping_type: '1',//配送方式 1=快递 ，2=门店自提
+        shippingType: '1',//配送方式 1=快递 ，2=门店自提
         useIntegral: 0, //使用积分 1-表示使用
         mark: '',//备注
         from: 'h5',//来源

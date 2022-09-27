@@ -41,7 +41,7 @@
     </el-row>
     <!--    顶列end-->
 
-    <el-row id="commodity-lower" v-for="listval in orderList" :key="listval.id">
+    <el-row id="commodity-lower" v-for="listval in orderList" :key="listval.id" v-if="isShowCommodity">
       <!--      订单时间+订单号-->
       <el-col :span="24" class="order-time">
         <div class="">
@@ -115,17 +115,17 @@
                 </el-col>
                 <el-col :span="6">
                   <div class="commodity-button">
-                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 0"
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type === '0'"
                                @click="payOrder(listval.orderId)">
                       立即支付
                     </el-button>
-                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 1">提醒发货</el-button>
-                    <el-button type="primary" size="small" v-if="listval.statusDto.type == 2">确认收货</el-button>
-                    <el-button type="text" size="small" v-if="listval.statusDto.type == 0"
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type === '1'">提醒发货</el-button>
+                    <el-button type="primary" size="small" v-if="listval.statusDto.type === '2'">确认收货</el-button>
+                    <el-button type="text" size="small" v-if="listval.statusDto.type === '0'"
                                @click="closeOrder(listval.orderId)">
                       取消订单
                     </el-button>
-                    <el-button type="text" size="small" v-if="listval.statusDto.type == 4">删除订单</el-button>
+                    <el-button type="text" size="small" v-if="listval.statusDto.type === '4'">删除订单</el-button>
                   </div>
                 </el-col>
               </el-row>
@@ -137,15 +137,21 @@
       <!--      订单内容end-->
     </el-row>
     <el-pagination
+      v-if="isShowCommodity"
       background
       layout="prev, pager, next"
       :total="totalElements">
     </el-pagination>
+    <!--    没有内容时的空状态时占位提示-->
+    <el-empty description="没有订单" v-if="!isShowCommodity">
+      <el-button type="primary" @click="$router.push('/index')">去首页看看</el-button>
+    </el-empty>
+    <!--    没有内容时的空状态时占位提示end-->
   </div>
 </template>
 
 <script>
-import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '../../api/api'
+import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '@/api/api'
 
 export default {
   name: "orderList",
@@ -153,7 +159,8 @@ export default {
     return {
       img_url: IMG_URL,
       orderList: {},//订单数据
-      totalElements: 0//总大小
+      totalElements: 0,//总大小
+      isShowCommodity: true //是否显示
     }
   },
   methods: {
@@ -187,14 +194,25 @@ export default {
   },
   props: ['type'],
   mounted() {
+    this.$emit('clicksetloding', true) //通知父组件开启遮罩层
     getOrderList({
       type: this.type,
       limit: 10,//页大小,默认为 10
       page: 1,//页码,默认为1
     }).then(res => {
-      console.log(res)
-      this.orderList = res.data.content
-      this.totalElements = res.data.totalElements
+      // console.log(res)
+      if (res.status === 200) {
+        this.orderList = res.data.content
+        this.totalElements = res.data.totalElements
+        this.$emit('clicksetloding', false) //获取数据成功，通知父组件关闭遮罩层
+        if (this.totalElements === 0) {
+          //没有内容，显示提示图标
+          this.isShowCommodity = false
+          return
+        }
+        this.isShowCommodity = true
+      }
+
     })
   }
 }

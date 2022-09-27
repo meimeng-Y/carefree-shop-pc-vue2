@@ -3,7 +3,7 @@
   <div id="recharge">
     <el-tabs v-model="activeName" @tab-click="handleClick" id="tab-top">
       <el-tab-pane label="充值方案" name="recharge">
-        <div class="rechargeItem-box">
+        <div class="rechargeItem-box" v-if="isShow">
           <div class="rechargeItem" v-for="val in rechargePriceWays" :key="val.id">
             <div class="rechargeItemTop">
               <img src="../../../assets/images/indexLogo.png" alt="">
@@ -16,13 +16,17 @@
             </div>
           </div>
         </div>
+        <!--    没有内容时的空状态时占位提示-->
+        <el-empty description="没有充值方案" v-if="!isShow">
+        </el-empty>
+        <!--    没有内容时的空状态时占位提示end-->
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import {getBalance, getRechargeIndex, postRechargeTest} from '../../../api/api'
+import {getRechargeIndex, postRechargeTest} from '@/api/api'
 
 export default {
   name: "recharge",
@@ -30,6 +34,7 @@ export default {
     return {
       activeName: 'recharge',
       rechargePriceWays: [], //充值方案全部
+      isShow: true,//控制没有内容时的空状态时占位提示
     };
   },
   methods: {
@@ -41,7 +46,7 @@ export default {
       postRechargeTest({
         rechar_id: id.toString()
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success(res.data)
         } else {
           this.$message.warning(res.data)
@@ -52,8 +57,18 @@ export default {
   mounted() {
     //获取充值方案
     getRechargeIndex().then(res => {
-      console.log(res)
-      this.rechargePriceWays = res.data.rechargePriceWays
+      if (res.status === 200) {
+        if (res.data.rechargePriceWays.length > 0) {
+          console.log(res)
+          this.rechargePriceWays = res.data.rechargePriceWays
+        } else {
+          this.isShow = false
+          return
+        }
+        this.isShow = true
+      } else {
+        this.$message.warning('获取数据失败')
+      }
     })
   }
 }
@@ -154,5 +169,9 @@ export default {
 
 #tab-top {
   border: 1px solid #E5E5E5;
+}
+
+#recharge, #tab-top {
+  height: 100%;
 }
 </style>

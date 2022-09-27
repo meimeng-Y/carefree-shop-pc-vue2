@@ -94,7 +94,6 @@ export default {
             if (res.status === 200) {
               window.localStorage.setItem('userInfo', JSON.stringify(res.data))
               this.setuserInfoVal(res.data)
-              let user = JSON.parse(window.localStorage.getItem('userInfo'))
             }
           })
           this.$router.push('/index')

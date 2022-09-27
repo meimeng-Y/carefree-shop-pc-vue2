@@ -13,9 +13,8 @@
         <span class="save" @click="saveList">保存</span>
       </div>
     </div>
-    <!--    顶栏-->
+    <!--    顶栏end-->
     <div id="favorites-content">
-
       <el-row>
         <el-col v-for="(value,index) in collectlist"
                 :key="value.pid"
@@ -46,14 +45,17 @@
             </div>
           </div>
         </el-col>
-
+        <!--    没有内容时的空状态时占位提示-->
+        <el-empty description="没有收藏的商品" v-if="isShow">
+        </el-empty>
+        <!--    没有内容时的空状态时占位提示end-->
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import {getCollectAll, IMG_URL, postCollectDels, postCollectDel} from '../../../api/api'
+import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '@/api/api'
 
 export default {
   name: "favorites",
@@ -66,6 +68,7 @@ export default {
       collectlist: [],//收藏列表
       queryType: 'collect',//查询的商品类型
       // checkedCollectList: []
+      isShow: false,//控制没有内容时的空状态时占位提示
     };
   },
   watch: {
@@ -89,8 +92,16 @@ export default {
       }).then(res => {
         console.log(res)
         // this.collectlist = res.data
-        if (res.data.length > 0) {
-          this.setMark(res.data)
+        if (res.status === 200) {
+          if (res.data.length > 0) {
+            this.setMark(res.data)
+          } else {
+            this.isShow = true
+            return
+          }
+          this.isShow = false
+        } else {
+          this.$message.warning('获取数据失败')
         }
       })
     },
@@ -139,7 +150,7 @@ export default {
         ids: listId //字符串格式
       }).then(res => {
         console.log(res)
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('删除成功')
           //刷新数据
           this.init()
@@ -158,6 +169,7 @@ export default {
     // 批量管理显示按钮
     showEdit() {
       if (this.collectlist.length === 0) {//收藏列表为空
+        this.$message.warning('当前没有可以操作的商品')
         return
       }
       this.edit = true
@@ -169,7 +181,7 @@ export default {
         category: this.queryType
       }).then(res => {
         console.log(res)
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('取消成功')
           this.init()
         }
@@ -187,8 +199,10 @@ export default {
 
 <style lang="less" scoped>
 #favorites {
-  //background: #99a9bf;
-  //  min-height: 60px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   .favorites-top {
     height: 56px;
     border: 1px solid #E5E5E5;
@@ -223,6 +237,7 @@ export default {
 #favorites-content {
   padding: 20px;
   border: 1px solid #E5E5E5;
+  height: 100%;
 }
 
 .btnBox {

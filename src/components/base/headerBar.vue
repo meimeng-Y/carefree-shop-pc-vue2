@@ -55,7 +55,7 @@ export default {
     goIndex() {
       // console.log(this.$route.path)
       if (this.$route.path === '/index') {
-        return
+
       } else {
         this.$router.push('/index')
       }

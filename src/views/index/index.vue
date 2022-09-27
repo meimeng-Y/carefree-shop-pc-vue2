@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import {getBanner, getBoutiqueList, getCategory, getLike, IMG_URL} from '../../api/api'
+import {getBanner, getBoutiqueList, getCategory, getLike, IMG_URL} from '@/api/api'
 import ProductList from "../../components/base/productList";
 
 export default {
@@ -126,7 +126,7 @@ export default {
     init() {
       //首页轮播图
       getBanner().then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           // console.log(res)
           this.banners = res.data
         }
@@ -138,14 +138,14 @@ export default {
       })
       //首页精品推荐
       getBoutiqueList().then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           // console.log(res)
           this.BoutiqueLists = res.data
         }
       })
       //首页猜你喜欢
       getLike().then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           // console.log(res)
           this.Likes = res.data
         }

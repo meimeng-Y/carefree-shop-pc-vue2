@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import {getCartList, IMG_URL, postUpCartNum, postOrderConfirm, postCartDelList} from '../../api/api'
+import {getCartList, IMG_URL, postCartDelList, postUpCartNum} from '@/api/api'
 import computeProice from '../../util/compute'
 
 export default {
@@ -149,7 +149,7 @@ export default {
       postCartDelList({
         ids: this.checkList
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('删除成功')
           this.getCart()
         }
@@ -160,7 +160,7 @@ export default {
       postCartDelList({
         ids: [id]
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('删除成功')
           this.getCart()
         }

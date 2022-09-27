@@ -130,7 +130,7 @@ export const postOrderCancel = params => post(USER_ORDER_URL + '/cancel', params
 export const postOrderPay = params => post(USER_ORDER_URL + '/pay', params);
 
 //提交订单，并支付
-export const postOrderCreate = params => post(USER_ORDER_URL + `/create//${params.key}`, params);
+export const postOrderCreate = params => post(USER_ORDER_URL + `/create/${params.key}`, params);
 
 //计算订单总价
 export const postOrderComputed = params => post(USER_ORDER_URL + `/computed/${params.key}`, params);

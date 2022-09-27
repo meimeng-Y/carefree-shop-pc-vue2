@@ -37,6 +37,9 @@
 </template>
 
 <script>
+import {getUserInfo} from "@/api/api";
+import {mapMutations} from "vuex";
+
 export default {
   name: "userInfo",
   data() {
@@ -54,15 +57,25 @@ export default {
       },
     };
   },
+  methods: {
+    ...mapMutations([
+      'setuserInfoVal'
+    ])
+  },
   mounted() {
-    if (window.localStorage.getItem('userInfo') != null) {
-      let user = JSON.parse(window.localStorage.getItem('userInfo'))
-      this.nickname = user.nickname
-      this.phone = user.phone
-      this.nowMoney = user.nowMoney
-    } else {
-      this.$message.warning('获取个人信息错误，请重新登录')
-    }
+    //更新用户信息
+    getUserInfo().then(res => {
+      if (res.status === 200) {
+        window.localStorage.setItem('userInfo', JSON.stringify(res.data))
+        this.setuserInfoVal(res.data)
+        let user = JSON.parse(window.localStorage.getItem('userInfo'))
+        this.nickname = user.nickname
+        this.phone = user.phone
+        this.nowMoney = user.nowMoney
+      } else {
+        this.$message.warning('获取个人信息错误，请重新登录')
+      }
+    })
   }
 }
 </script>

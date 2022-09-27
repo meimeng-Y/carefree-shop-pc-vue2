@@ -17,7 +17,7 @@
             </div>
           </el-col>
           <el-col :span="21">
-            <div>
+            <div class="routBox">
               <router-view></router-view>
             </div>
           </el-col>
@@ -50,6 +50,7 @@ export default {
   margin-bottom: 140px;
 
   & > .el-row {
+    min-height: 430px;
     display: flex;
 
     & > div:nth-child(1) {
@@ -87,4 +88,7 @@ export default {
   }
 }
 
+.routBox {
+  height: 100%;
+}
 </style>

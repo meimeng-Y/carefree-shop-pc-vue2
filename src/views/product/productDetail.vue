@@ -136,7 +136,7 @@
 
 import LikeList from "./likeList";
 import Evaluation from "./evaluation";
-import {getGoodsDetail, IMG_URL, postCollectAdd, postCollectDel, postCartAdd, getLike} from '../../api/api'
+import {getGoodsDetail, getLike, IMG_URL, postCartAdd, postCollectAdd, postCollectDel} from '@/api/api'
 
 export default {
 
@@ -198,7 +198,7 @@ export default {
     init() {
       //猜你喜欢
       getLike().then(res => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           // console.log(res)
           this.Likes = res.data
         }
@@ -222,13 +222,18 @@ export default {
           this.specSelected.push(item.attrValue[0])
         })
         //判断是否收藏
-        if (this.storeInfoVal.userCollect) {
-          //收藏
-          this.userCollect = true
-        } else {
-          //未收藏
-          this.userCollect = false
-        }
+        /*
+        代码解释
+        //判断是否收藏
+         if (this.storeInfoVal.userCollect) {
+           //收藏
+           this.userCollect = true
+         } else {
+           //未收藏
+           this.userCollect = false
+         } 简化后的代码  this.userCollect = !!this.storeInfoVal.userCollect;
+         */
+        this.userCollect = !!this.storeInfoVal.userCollect;
       })
     },
     //解析html标签
@@ -257,7 +262,7 @@ export default {
         uniqueId: this.skuInfo.unique //商品规格的唯一值
       }).then(res => {
         console.log(res)
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.$message.success('添加成功')
         }
       })
@@ -279,7 +284,7 @@ export default {
           category: 'collect'
         }).then(res => {
           console.log(res)
-          if (res.status == 200) {
+          if (res.status === 200) {
             this.$message.success('收藏成功')
             this.userCollect = !this.userCollect
           }
@@ -290,7 +295,7 @@ export default {
           category: 'collect'
         }).then(res => {
           console.log(res)
-          if (res.status == 200) {
+          if (res.status === 200) {
             this.$message.success('取消成功')
             this.userCollect = !this.userCollect
           }
@@ -308,11 +313,16 @@ export default {
         if (pIndex === index) {
           //判断要修改的列与被点击的列相同
           for (let i = 0; i < item.attrValue.length; i++) {
+            /*
+            代码解释
             if (i === aIndex) {
-              item.attrValue[i].check = true
-            } else {
-              item.attrValue[i].check = false
-            }
+               item.attrValue[i].check = true
+             } else {
+               item.attrValue[i].check = false
+             }
+             简化后的代码 = item.attrValue[i].check = i === aIndex;
+             */
+            item.attrValue[i].check = i === aIndex;
           }
         }
       })

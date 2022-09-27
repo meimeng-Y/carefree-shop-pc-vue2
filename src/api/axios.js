@@ -5,7 +5,8 @@ import router from '../router/index'
 
 //请求根路径 mock路径
 // axios.defaults.baseURL = 'http://127.0.0.1:4523/m1/1179224-0-default'
-axios.defaults.baseURL = 'http://127.0.0.1:8088'
+// axios.defaults.baseURL = 'http://127.0.0.1:8088'
+axios.defaults.baseURL = 'https://service-6t2w5dhi-1254192638.gz.apigw.tencentcs.com/release'//腾讯云函数
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
 // 请求拦截
 axios.interceptors.request.use(config => {

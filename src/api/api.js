@@ -2,7 +2,6 @@
  * api接口统一管理
  */
 import {get, post} from './axios';
-import axios from "axios";
 
 /**
  *
@@ -17,7 +16,7 @@ import axios from "axios";
  * 最后通过export导出topics。
  */
 //图片主机地址
-export const IMG_URL = axios.defaults.baseURL + '/img';
+const qiuniu = 'http://carefree.img.meimeng.ml' //七牛云图片地址
 
 const INDEX_URl = '/api/index' //首页前缀
 

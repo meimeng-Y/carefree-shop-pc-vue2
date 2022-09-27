@@ -136,12 +136,15 @@
       </el-col>
       <!--      订单内容end-->
     </el-row>
+    <!--    分页-->
     <el-pagination
       v-if="isShowCommodity"
+      @current-change="handleCurrentChange"
       background
       layout="prev, pager, next"
       :total="totalElements">
     </el-pagination>
+    <!--    分页end-->
     <!--    没有内容时的空状态时占位提示-->
     <el-empty description="没有订单" v-if="!isShowCommodity">
       <el-button type="primary" @click="$router.push('/index')">去首页看看</el-button>
@@ -151,7 +154,7 @@
 </template>
 
 <script>
-import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '@/api/api'
+import {getOrderList, IMG_URL, postOrderCancel, postOrderPay,} from '../../api/api'
 
 export default {
   name: "orderList",
@@ -190,30 +193,37 @@ export default {
       }).then(res => {
         console.log(res)
       })
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.init(val)
+    },
+    init(page) {
+      getOrderList({
+        type: this.type,
+        limit: 10,//页大小,默认为 10
+        page: page,//页码,默认为1
+      }).then(res => {
+        // console.log(res)
+        if (res.status === 200) {
+          this.orderList = res.data.content
+          this.totalElements = res.data.totalElements
+          this.$emit('clicksetloding', false) //获取数据成功，通知父组件关闭遮罩层
+          if (this.totalElements === 0) {
+            //没有内容，显示提示图标
+            this.isShowCommodity = false
+            return
+          }
+          this.isShowCommodity = true
+        }
+      })
     }
+
   },
   props: ['type'],
   mounted() {
     this.$emit('clicksetloding', true) //通知父组件开启遮罩层
-    getOrderList({
-      type: this.type,
-      limit: 10,//页大小,默认为 10
-      page: 1,//页码,默认为1
-    }).then(res => {
-      // console.log(res)
-      if (res.status === 200) {
-        this.orderList = res.data.content
-        this.totalElements = res.data.totalElements
-        this.$emit('clicksetloding', false) //获取数据成功，通知父组件关闭遮罩层
-        if (this.totalElements === 0) {
-          //没有内容，显示提示图标
-          this.isShowCommodity = false
-          return
-        }
-        this.isShowCommodity = true
-      }
-
-    })
+    this.init(1)
   }
 }
 </script>

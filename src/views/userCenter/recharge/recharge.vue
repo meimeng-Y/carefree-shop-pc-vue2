@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {getRechargeIndex, postRechargeTest} from '@/api/api'
+import {getRechargeIndex, postRechargeTest} from '../../../api/api'
 
 export default {
   name: "recharge",
@@ -59,7 +59,7 @@ export default {
     getRechargeIndex().then(res => {
       if (res.status === 200) {
         if (res.data.rechargePriceWays.length > 0) {
-          console.log(res)
+          // console.log(res)
           this.rechargePriceWays = res.data.rechargePriceWays
         } else {
           this.isShow = false

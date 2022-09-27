@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import {getUserInfo} from "@/api/api";
+import {getUserInfo} from "../../../api/api";
 import {mapMutations} from "vuex";
 
 export default {

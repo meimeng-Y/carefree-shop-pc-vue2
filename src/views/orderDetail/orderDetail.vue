@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import {getOrderDetail, IMG_URL, postOrderCancel} from "@/api/api";
+import {getOrderDetail, IMG_URL, postOrderCancel} from "../../api/api";
 
 export default {
   name: "orderDetail",

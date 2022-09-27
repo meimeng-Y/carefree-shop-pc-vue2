@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '@/api/api'
+import {getCollectAll, IMG_URL, postCollectDel, postCollectDels} from '../../../api/api'
 
 export default {
   name: "favorites",
@@ -90,7 +90,7 @@ export default {
       getCollectAll({
         type: this.queryType
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         // this.collectlist = res.data
         if (res.status === 200) {
           if (res.data.length > 0) {

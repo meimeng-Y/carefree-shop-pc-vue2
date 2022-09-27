@@ -90,7 +90,7 @@
 
 <script>
 import AddAddress from "../../../components/orderInfo/addAddress";
-import {getAddress, postDelEdit, postEdit} from '@/api/api'
+import {getAddress, postDelEdit, postEdit} from '../../../api/api'
 
 export default {
   name: "signingAddress",
@@ -173,7 +173,7 @@ export default {
     }).then(res => {
       if (res.status === 200) {
         if (res.data.length > 0) {
-          console.log(res)
+          // console.log(res)
           this.Address = res.data
         } else {
           this.isShow = false

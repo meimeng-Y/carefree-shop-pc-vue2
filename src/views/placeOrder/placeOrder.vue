@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import {getAddress, IMG_URL, postOrderConfirm, postOrderCreate} from '@/api/api'
+import {getAddress, IMG_URL, postOrderConfirm, postOrderCreate} from '../../api/api'
 
 export default {
   name: "placeOrder",
@@ -165,8 +165,7 @@ export default {
           }, 3000)
 
         } else {
-
-          this.$toast.fail(res.msg)
+          this.$message.warning(res.msg)
         }
       })
     }

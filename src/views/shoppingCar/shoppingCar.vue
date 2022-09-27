@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import {getCartList, IMG_URL, postCartDelList, postUpCartNum} from '@/api/api'
+import {getCartList, IMG_URL, postCartDelList, postUpCartNum} from '../../api/api'
 import computeProice from '../../util/compute'
 
 export default {

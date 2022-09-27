@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {IMG_URL} from '@/api/api'
+import {IMG_URL} from '../../api/api'
 
 export default {
   name: "likeList",

@@ -78,7 +78,7 @@
 
 <script>
 import ProductList from "../../components/base/productList";
-import {getGoodsList} from '@/api/api'
+import {getGoodsList} from '../../api/api'
 import {createNamespacedHelpers} from 'vuex'
 
 const {mapMutations, mapGetters} = createNamespacedHelpers('search')

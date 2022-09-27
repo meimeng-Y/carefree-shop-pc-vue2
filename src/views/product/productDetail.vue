@@ -136,7 +136,7 @@
 
 import LikeList from "./likeList";
 import Evaluation from "./evaluation";
-import {getGoodsDetail, getLike, IMG_URL, postCartAdd, postCollectAdd, postCollectDel} from '@/api/api'
+import {getGoodsDetail, getLike, IMG_URL, postCartAdd, postCollectAdd, postCollectDel} from '../../api/api'
 
 export default {
 

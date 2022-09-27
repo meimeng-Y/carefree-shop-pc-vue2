@@ -18,6 +18,8 @@ import {get, post} from './axios';
 //图片主机地址
 const qiuniu = 'http://carefree.img.meimeng.ml' //七牛云图片地址
 
+export const IMG_URL = qiuniu;
+
 const INDEX_URl = '/api/index' //首页前缀
 
 const CATEGORIES_URL = '/api' //商品分类前缀

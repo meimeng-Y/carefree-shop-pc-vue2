@@ -1,24 +1,31 @@
 # carefree-shop-pc-vue2
 
-> 一个基于vue2的商城PC前端项目
+## 无忧商城
 
-# Build Setup
+> 一个基于vue2的商城PC前端项目,使用了Element UI
+> 参考天猫商城的购物流程：用户从注册开始，到完成登录，浏览商品，加入购物车，进行下单，确认收货，等一系列操作
 
-### 构建设置
+## 项目预览
 
-``` bash
-# install dependencies
-# 安装依赖项
-npm install
++ 前台演示地址：<https://meimengpc.netlify.app>
 
-# serve with hot reload at localhost:8080
-npm run dev
+### 项目界面
 
-# build for production with minification
-# 缩小构建生产
-npm run build
++ ##### 界面(部分)---
++ ![主页](主页.png)
++ ![商品详情](商品详情.png)
++ ![购物车](购物车.png)
++ ![地址](地址.png)
++ ![订单](订单.png)
++ ![订单详情](订单详情.png)
 
-# build for production and view the bundle analyzer report
-# 为生产而构建并查看捆绑分析器报告
-npm run build --report
-```
+### 注意事项：
+
+1.该项目为练习作品，部分页面跳转未完善，但以完成用户注册，登录，浏览商品，加入购物车，添加地址，模拟充值，进行下单，确认收货，查看订单等一系列功能
+2.项目后端部署在腾讯云函数上，返回数据较慢。图片放置在七牛云海外存储，返回较慢，甚至不返回
+
+### 环境依赖
+
+> + nodejs 12.22.11
+> + less: "^3.9.0",
+

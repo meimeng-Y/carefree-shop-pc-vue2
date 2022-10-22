@@ -165,8 +165,7 @@ export default {
           }, 3000)
 
         } else {
-
-          this.$toast.fail(res.msg)
+          this.$message.warning(res.msg)
         }
       })
     }

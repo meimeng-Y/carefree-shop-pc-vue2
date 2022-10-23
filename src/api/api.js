@@ -16,7 +16,7 @@ import {get, post} from './axios';
  * 最后通过export导出topics。
  */
 //图片主机地址
-const qiuniu = 'http://carefree.img.meimeng.eu.org' //七牛云图片地址
+const qiuniu = 'https://meimeng.evai.pl/i/' //七牛云图片地址
 
 export const IMG_URL = qiuniu;
 
